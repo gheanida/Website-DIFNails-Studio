@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  /* Admin Theme: Obsidian & Velvet */
+  --color-admin-bg: #131316;
+  --color-admin-lowest: #0d0e10;
+  --color-admin-low: #1b1b1e;
+  --color-admin-surface: #1f1f22;
+  --color-admin-surface-high: #292a2c;
+  --color-admin-surface-highest: #343437;
+  --color-admin-primary: #b8c6ed;
+  --color-admin-primary-container: #3e4c6d;
+  --color-admin-secondary: #c6c6c7;
+  --color-admin-tertiary: #bac7e2;
+  --color-admin-tertiary-container: #404d64;
+  --color-admin-outline: #8f9098;
+  --color-admin-outline-variant: #45464e;
+  --color-admin-text: #e4e2e5;
+  --color-admin-text-muted: #c5c6cf;
+
+  /* Customer Theme: Serene Petal */
+  --color-customer-bg: #fff8f7;
+  --color-customer-lowest: #ffffff;
+  --color-customer-low: #fff0f0;
+  --color-customer-surface: #fceae9;
+  --color-customer-surface-high: #f6e4e4;
+  --color-customer-surface-highest: #f0dfde;
+  --color-customer-primary: #71585b;
+  --color-customer-primary-container: #f8d7da;
+  --color-customer-secondary: #5f5f59;
+  --color-customer-secondary-container: #e4e3db;
+  --color-customer-tertiary: #825249;
+  --color-customer-tertiary-container: #ffd6cf;
+  --color-customer-outline: #817475;
+  --color-customer-outline-variant: #d2c3c4;
+  --color-customer-text: #221919;
+  --color-customer-text-muted: #4f4445;
+
+  /* Typography Fonts */
+  --font-hanken: "Hanken Grotesk", sans-serif;
+  --font-bodoni: "Bodoni Moda", serif;
+  --font-dm: "DM Sans", sans-serif;
+}
