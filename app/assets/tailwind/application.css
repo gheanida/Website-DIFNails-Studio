@@ -1,40 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  /* Admin Theme: Obsidian & Velvet */
-  --color-admin-bg: #131316;
-  --color-admin-lowest: #0d0e10;
-  --color-admin-low: #1b1b1e;
-  --color-admin-surface: #1f1f22;
-  --color-admin-surface-high: #292a2c;
-  --color-admin-surface-highest: #343437;
-  --color-admin-primary: #b8c6ed;
-  --color-admin-primary-container: #3e4c6d;
-  --color-admin-secondary: #c6c6c7;
-  --color-admin-tertiary: #bac7e2;
-  --color-admin-tertiary-container: #404d64;
-  --color-admin-outline: #8f9098;
-  --color-admin-outline-variant: #45464e;
-  --color-admin-text: #e4e2e5;
-  --color-admin-text-muted: #c5c6cf;
+  /* Admin Theme: Quiet Luxury Portal */
+  --color-admin-bg: #fff8f5;
+  --color-admin-surface: #fbf2ed;
+  --color-admin-surface-high: #efe6e2;
+  --color-admin-surface-container: #f5ece7;
+  --color-admin-primary: #75566f;
+  --color-admin-primary-container: #e9c1cc;
+  --color-admin-on-primary: #ffffff;
+  --color-admin-on-primary-container: #6c4d57;
+  --color-admin-secondary: #615e58;
+  --color-admin-tertiary: #7d562d;
+  --color-admin-tertiary-container: #f5c18f;
+  --color-admin-outline: #817477;
+  --color-admin-outline-variant: #d2c3c6;
+  --color-admin-text: #1e1b18;
+  --color-admin-text-muted: #4f4447;
+  --color-admin-error: #ba1a1a;
+  --color-admin-error-container: #ffdad6;
 
-  /* Customer Theme: Serene Petal */
-  --color-customer-bg: #fff8f7;
-  --color-customer-lowest: #ffffff;
-  --color-customer-low: #fff0f0;
-  --color-customer-surface: #fceae9;
-  --color-customer-surface-high: #f6e4e4;
-  --color-customer-surface-highest: #f0dfde;
-  --color-customer-primary: #71585b;
-  --color-customer-primary-container: #f8d7da;
-  --color-customer-secondary: #5f5f59;
-  --color-customer-secondary-container: #e4e3db;
-  --color-customer-tertiary: #825249;
-  --color-customer-tertiary-container: #ffd6cf;
-  --color-customer-outline: #817475;
-  --color-customer-outline-variant: #d2c3c4;
-  --color-customer-text: #221919;
-  --color-customer-text-muted: #4f4445;
+  /* Customer Theme: Quiet Luxury Portal */
+  --color-customer-bg: #fff8f5;
+  --color-customer-surface: #fff8f5;
+  --color-customer-surface-container: #f5ece7;
+  --color-customer-surface-container-low: #fbf2ed;
+  --color-customer-surface-container-highest: #e9e1dc;
+  --color-customer-primary: #75565f;
+  --color-customer-primary-container: #e9c1cc;
+  --color-customer-on-primary: #ffffff;
+  --color-customer-on-primary-container: #6c4d57;
+  --color-customer-secondary: #615e58;
+  --color-customer-tertiary: #7d562d;
+  --color-customer-tertiary-container: #f5c18f;
+  --color-customer-outline: #817477;
+  --color-customer-outline-variant: #d2c3c6;
+  --color-customer-text: #1e1b18;
+  --color-customer-text-muted: #4f4447;
 
   /* Typography Fonts */
   --font-hanken: "Hanken Grotesk", sans-serif;
