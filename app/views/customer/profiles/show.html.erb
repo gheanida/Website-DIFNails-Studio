@@ -1,0 +1,32 @@
+<div class="space-y-8 max-w-xl mx-auto">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="font-serif text-3xl font-bold text-customer-primary">My Profile</h1>
+      <p class="text-sm text-customer-text-muted mt-1">Manage your contact information and password details.</p>
+    </div>
+    <%= link_to "Edit Profile", edit_customer_profile_path, class: "px-6 py-2.5 rounded-full border border-customer-primary text-customer-primary text-xs font-semibold uppercase tracking-wider hover:bg-customer-primary-container/30 transition-all" %>
+  </div>
+
+  <!-- Profile Details Card -->
+  <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-[24px] p-8 space-y-6 shadow-sm">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Full Name</span>
+        <p class="text-base font-semibold text-customer-primary mt-1"><%= @customer.name %></p>
+      </div>
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Email Address</span>
+        <p class="text-base font-semibold text-customer-primary mt-1"><%= @customer.email %></p>
+      </div>
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Phone Number</span>
+        <p class="text-base font-semibold text-customer-primary mt-1"><%= @customer.phone.present? ? @customer.phone : "-" %></p>
+      </div>
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Member Since</span>
+        <p class="text-sm text-customer-primary mt-1"><%= @customer.created_at.strftime("%B %d, %Y") %></p>
+      </div>
+    </div>
+  </div>
+</div>

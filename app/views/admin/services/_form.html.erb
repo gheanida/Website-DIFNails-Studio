@@ -1,0 +1,54 @@
+<%= form_with(model: [:admin, service], local: true, class: "space-y-6 max-w-xl bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-8") do |f| %>
+  <% if service.errors.any? %>
+    <div class="p-4 rounded-lg bg-red-950/40 border border-red-900/50 text-red-300 text-sm">
+      <h2 class="font-semibold mb-2"><%= pluralize(service.errors.count, "error") %> prohibited this service from being saved:</h2>
+      <ul class="list-disc pl-5 space-y-1">
+        <% service.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Service Name -->
+  <div class="space-y-2">
+    <%= f.label :name, class: "block text-xs font-semibold uppercase tracking-wider text-admin-tertiary" %>
+    <%= f.text_field :name, required: true, class: "w-full bg-admin-low text-white border border-admin-outline-variant rounded px-4 py-2.5 text-sm focus:border-admin-primary-container focus:outline-none transition-colors" %>
+  </div>
+
+  <!-- Service Category -->
+  <div class="space-y-2">
+    <%= f.label :service_category_id, "Category", class: "block text-xs font-semibold uppercase tracking-wider text-admin-tertiary" %>
+    <%= f.collection_select :service_category_id, @categories, :id, :name, {}, class: "w-full bg-admin-low text-white border border-admin-outline-variant rounded px-4 py-2.5 text-sm focus:border-admin-primary-container focus:outline-none transition-colors cursor-pointer" %>
+  </div>
+
+  <!-- Price -->
+  <div class="space-y-2">
+    <%= f.label :price, "Price (Rp)", class: "block text-xs font-semibold uppercase tracking-wider text-admin-tertiary" %>
+    <%= f.number_field :price, required: true, step: "any", class: "w-full bg-admin-low text-white border border-admin-outline-variant rounded px-4 py-2.5 text-sm focus:border-admin-primary-container focus:outline-none transition-colors" %>
+  </div>
+
+  <!-- Description -->
+  <div class="space-y-2">
+    <%= f.label :description, class: "block text-xs font-semibold uppercase tracking-wider text-admin-tertiary" %>
+    <%= f.text_area :description, rows: 4, class: "w-full bg-admin-low text-white border border-admin-outline-variant rounded px-4 py-2.5 text-sm focus:border-admin-primary-container focus:outline-none transition-colors" %>
+  </div>
+
+  <!-- Image URL -->
+  <div class="space-y-2">
+    <%= f.label :image_url, "Image URL", class: "block text-xs font-semibold uppercase tracking-wider text-admin-tertiary" %>
+    <%= f.url_field :image_url, class: "w-full bg-admin-low text-white border border-admin-outline-variant rounded px-4 py-2.5 text-sm focus:border-admin-primary-container focus:outline-none transition-colors" %>
+  </div>
+
+  <!-- Is Active Toggle -->
+  <div class="flex items-center gap-3">
+    <%= f.check_box :is_active, class: "w-4 h-4 rounded bg-admin-low text-admin-primary-container border-admin-outline-variant focus:ring-0 focus:ring-offset-0 cursor-pointer" %>
+    <%= f.label :is_active, "Active and Bookable by Clients", class: "text-sm text-admin-text cursor-pointer select-none font-medium" %>
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex items-center gap-4 pt-4 border-t border-admin-outline-variant/30">
+    <%= f.submit class: "px-5 py-2.5 rounded bg-admin-primary-container text-white text-sm font-semibold tracking-wider hover:opacity-90 transition-all cursor-pointer" %>
+    <%= link_to "Cancel", admin_services_path, class: "px-5 py-2.5 rounded border border-admin-outline-variant hover:bg-admin-low text-admin-text-muted hover:text-white text-sm font-semibold tracking-wider transition-colors" %>
+  </div>
+<% end %>

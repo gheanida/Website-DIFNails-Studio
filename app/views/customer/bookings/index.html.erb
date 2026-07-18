@@ -1,0 +1,67 @@
+<div class="space-y-8 max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="font-serif text-3xl font-bold text-customer-primary">My Appointments</h1>
+      <p class="text-sm text-customer-text-muted mt-1">View your booking history and upcoming salon visits.</p>
+    </div>
+    <%= link_to "Book New Visit", new_customer_booking_path, class: "px-6 py-2.5 rounded-full bg-customer-tertiary text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm" %>
+  </div>
+
+  <!-- Bookings List -->
+  <div class="space-y-6">
+    <% if @bookings.any? %>
+      <% @bookings.each do |booking| %>
+        <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-[16px] p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-sm transition-all">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <!-- Date & Time -->
+              <span class="font-serif text-lg font-semibold text-customer-primary">
+                <%= booking.booking_date.strftime("%B %d, %Y") %>
+              </span>
+              <span class="text-sm text-customer-text-muted">&bull;</span>
+              <span class="text-sm font-medium text-customer-text">
+                <%= booking.booking_time.strftime("%H:%M") %>
+              </span>
+            </div>
+
+            <div class="space-y-1">
+              <h3 class="text-sm font-semibold text-customer-primary">
+                <%= booking.service.name %>
+              </h3>
+              <p class="text-xs text-customer-text-muted leading-relaxed">
+                Category: <%= booking.service.service_category.name %> &bull; Price: <%= number_to_currency(booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %>
+              </p>
+              <% if booking.notes.present? %>
+                <p class="text-xs italic text-customer-text-muted mt-1">
+                  Note: "<%= booking.notes %>"
+                </p>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+            <!-- Status Badge -->
+            <% status_classes = case booking.status
+               when 'pending' then 'bg-amber-50 text-amber-700 border border-amber-200'
+               when 'confirmed' then 'bg-blue-50 text-blue-700 border border-blue-200'
+               when 'completed' then 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+               when 'cancelled' then 'bg-red-50 text-red-700 border border-red-200'
+               else 'bg-customer-surface-high text-customer-text-muted border border-customer-outline-variant'
+               end %>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase <%= status_classes %>">
+              <%= booking.status %>
+            </span>
+
+            <%= link_to "Details", customer_booking_path(booking), class: "text-xs font-semibold uppercase tracking-wider text-customer-primary hover:text-customer-tertiary transition-colors" %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-[16px] p-12 text-center text-customer-text-muted space-y-4">
+        <p>You do not have any appointments scheduled yet.</p>
+        <%= link_to "Schedule Your First Appointment", new_customer_booking_path, class: "inline-block px-6 py-2.5 rounded-full bg-customer-tertiary text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all" %>
+      </div>
+    <% end %>
+  </div>
+</div>

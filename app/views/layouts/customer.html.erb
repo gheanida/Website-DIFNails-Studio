@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "DIFNails - Serene Petal" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <style>
+      body {
+        font-family: var(--font-dm), 'DM Sans', sans-serif;
+        background-color: var(--color-customer-bg, #fff8f7);
+        color: var(--color-customer-text, #221919);
+      }
+      h1, h2, h3, .font-serif {
+        font-family: var(--font-bodoni), 'Bodoni Moda', serif;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-customer-bg text-customer-text">
+    <!-- Header Navigation -->
+    <header class="bg-customer-bg/85 backdrop-blur-md sticky top-0 z-40 border-b border-customer-outline-variant/40">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <!-- Logo / Brand Title -->
+        <%= link_to root_path, class: "flex flex-col text-left group" do %>
+          <span class="font-serif text-2xl font-semibold tracking-wide text-customer-primary group-hover:text-customer-tertiary transition-colors">DIFNails</span>
+          <span class="text-[10px] tracking-[0.2em] uppercase text-customer-text-muted">Aesthetic Salon</span>
+        <% end %>
+
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wider uppercase text-customer-text-muted">
+          <%= link_to "Home", root_path, class: "hover:text-customer-primary transition-colors #{current_page?(root_path) ? 'text-customer-primary border-b border-customer-primary pb-1' : ''}" %>
+          <%= link_to "Services", services_path, class: "hover:text-customer-primary transition-colors #{current_page?(services_path) ? 'text-customer-primary border-b border-customer-primary pb-1' : ''}" %>
+          <% if customer_signed_in? %>
+            <%= link_to "My Bookings", customer_bookings_path, class: "hover:text-customer-primary transition-colors #{current_page?(customer_bookings_path) ? 'text-customer-primary border-b border-customer-primary pb-1' : ''}" %>
+            <%= link_to "My Profile", edit_customer_profile_path, class: "hover:text-customer-primary transition-colors #{current_page?(edit_customer_profile_path) || current_page?(customer_profile_path) ? 'text-customer-primary border-b border-customer-primary pb-1' : ''}" %>
+          <% end %>
+        </nav>
+
+        <!-- CTAs / Actions -->
+        <div class="flex items-center gap-4">
+          <% if customer_signed_in? %>
+            <%= link_to new_customer_booking_path, class: "px-5 py-2.5 rounded-full bg-customer-tertiary text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm" do %>
+              Book Now
+            <% end %>
+            <%= button_to destroy_customer_session_path, method: :delete, class: "text-xs font-medium text-customer-text-muted hover:text-customer-primary hover:underline transition-all cursor-pointer bg-transparent border-0" do %>
+              Logout
+            <% end %>
+          <% else %>
+            <%= link_to "Client Sign In", new_customer_session_path, class: "text-xs font-medium uppercase tracking-wider text-customer-primary hover:text-customer-tertiary transition-colors" %>
+            <%= link_to "Register", new_customer_registration_path, class: "px-5 py-2.5 rounded-full bg-customer-primary-container text-customer-primary text-xs font-semibold uppercase tracking-wider hover:bg-customer-surface-high transition-colors" %>
+          <% end %>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
+      <% if notice %>
+        <div class="mb-8 p-4 rounded-lg bg-customer-primary-container text-customer-primary border border-customer-outline-variant flex justify-between items-center text-sm">
+          <span><%= notice %></span>
+        </div>
+      <% end %>
+      <% if alert %>
+        <div class="mb-8 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200 flex justify-between items-center text-sm">
+          <span><%= alert %></span>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-customer-surface border-t border-customer-outline-variant/30 py-12 mt-16">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex flex-col items-center md:items-start text-center md:text-left">
+          <span class="font-serif text-xl font-semibold tracking-wide text-customer-primary">DIFNails</span>
+          <span class="text-xs text-customer-text-muted mt-1">&copy; 2026 DIFNails Aesthetic Salon. All rights reserved.</span>
+        </div>
+        <div class="flex gap-8 text-xs uppercase tracking-wider text-customer-text-muted">
+          <%= link_to "Home", root_path, class: "hover:text-customer-primary" %>
+          <%= link_to "Services", services_path, class: "hover:text-customer-primary" %>
+          <%= link_to "Admin Area", admin_root_path, class: "hover:text-customer-primary" %>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

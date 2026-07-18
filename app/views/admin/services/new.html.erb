@@ -1,0 +1,10 @@
+<div class="space-y-8">
+  <!-- Header -->
+  <div>
+    <%= link_to "&larr; Back to Services".html_safe, admin_services_path, class: "text-sm text-admin-primary hover:text-white transition-colors" %>
+    <h1 class="text-3xl font-semibold tracking-tight text-white mt-4">Add New Service</h1>
+    <p class="text-sm text-admin-text-muted mt-1">Configure a new manicure, pedicure, or custom nail art treatment.</p>
+  </div>
+
+  <%= render "form", service: @service %>
+</div>

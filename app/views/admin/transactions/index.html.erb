@@ -1,0 +1,104 @@
+<div class="space-y-8">
+  <!-- Header -->
+  <div>
+    <h1 class="text-3xl font-semibold tracking-tight text-white">Financial Transactions</h1>
+    <p class="text-sm text-admin-text-muted mt-1">Review revenue streams, payments, and overall profit metrics.</p>
+  </div>
+
+  <!-- Financial Metrics Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Total Income -->
+    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
+      <span class="text-xs font-semibold tracking-wider text-emerald-400 uppercase flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        Total Income
+      </span>
+      <span class="text-3xl font-bold text-white tracking-tight mt-2">
+        <%= number_to_currency(@total_income, unit: "Rp ", precision: 0, delimiter: ".") %>
+      </span>
+    </div>
+
+    <!-- Total Expenses (placeholder or actual) -->
+    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
+      <span class="text-xs font-semibold tracking-wider text-rose-400 uppercase flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+        Total Expenses
+      </span>
+      <span class="text-3xl font-bold text-white tracking-tight mt-2">
+        <%= number_to_currency(@total_expense, unit: "Rp ", precision: 0, delimiter: ".") %>
+      </span>
+    </div>
+
+    <!-- Net Profit -->
+    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
+      <span class="text-xs font-semibold tracking-wider text-admin-primary uppercase flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-admin-primary"></span>
+        Net Profit
+      </span>
+      <span class="text-3xl font-bold text-white tracking-tight mt-2">
+        <%= number_to_currency(@net_profit, unit: "Rp ", precision: 0, delimiter: ".") %>
+      </span>
+    </div>
+  </div>
+
+  <!-- Transactions Table -->
+  <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl overflow-hidden">
+    <div class="p-6 border-b border-admin-outline-variant/30">
+      <h2 class="text-lg font-semibold text-white">Transaction Logs</h2>
+    </div>
+
+    <% if @transactions.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead>
+            <tr class="bg-admin-low border-b border-admin-outline-variant/50 text-admin-tertiary">
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Date</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Description</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Type</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Category</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-outline-variant/30">
+            <% @transactions.each do |tx| %>
+              <tr class="hover:bg-admin-low/40 transition-colors">
+                <td class="px-6 py-4 font-medium text-admin-primary">
+                  <%= tx.transaction_date.strftime("%b %d, %Y") %>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="font-semibold text-white"><%= tx.description %></div>
+                  <% if tx.booking %>
+                    <div class="text-xs text-admin-text-muted mt-0.5">
+                      Linked to booking for <%= tx.booking.customer.name %> on <%= tx.booking.booking_date.strftime("%b %d") %>
+                    </div>
+                  <% end %>
+                </td>
+                <td class="px-6 py-4 text-xs font-medium text-admin-text-muted capitalize">
+                  <%= tx.transaction_type %>
+                </td>
+                <td class="px-6 py-4">
+                  <% if tx.category == 'income' %>
+                    <span class="px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/30 text-xs font-medium uppercase tracking-wider">
+                      Income
+                    </span>
+                  <% else %>
+                    <span class="px-2 py-0.5 rounded bg-rose-950/40 text-rose-400 border border-rose-800/30 text-xs font-medium uppercase tracking-wider">
+                      Expense
+                    </span>
+                  <% end %>
+                </td>
+                <td class="px-6 py-4 text-right font-bold <%= tx.category == 'income' ? 'text-emerald-400' : 'text-rose-400' %>">
+                  <%= tx.category == 'income' ? '+' : '-' %> <%= number_to_currency(tx.amount, unit: "Rp ", precision: 0, delimiter: ".") %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-admin-text-muted">
+        No transactions recorded yet.
+      </div>
+    <% end %>
+  </div>
+</div>

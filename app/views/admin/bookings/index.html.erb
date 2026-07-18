@@ -1,0 +1,99 @@
+<div class="space-y-8">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <h1 class="text-3xl font-semibold tracking-tight text-white">Booking Management</h1>
+      <p class="text-sm text-admin-text-muted mt-1">Review, confirm, complete, or cancel appointments.</p>
+    </div>
+  </div>
+
+  <!-- Bookings Queue Table Card -->
+  <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl overflow-hidden">
+    <div class="p-6 border-b border-admin-outline-variant/30 flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-white">All Bookings Queue</h2>
+      <span class="text-xs text-admin-text-muted font-medium"><%= @bookings.count %> total records</span>
+    </div>
+
+    <% if @bookings.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead>
+            <tr class="bg-admin-low border-b border-admin-outline-variant/50 text-admin-tertiary">
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Date & Time</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Client</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Service</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Notes</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Status</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-outline-variant/30">
+            <% @bookings.each do |booking| %>
+              <tr class="hover:bg-admin-low/40 transition-colors">
+                <!-- Date & Time -->
+                <td class="px-6 py-4 font-medium text-admin-primary">
+                  <div class="font-semibold text-white"><%= booking.booking_date.strftime("%b %d, %Y") %></div>
+                  <div class="text-xs text-admin-tertiary mt-0.5"><%= booking.booking_time.strftime("%H:%M") %></div>
+                </td>
+
+                <!-- Customer Details -->
+                <td class="px-6 py-4">
+                  <div class="font-semibold text-white"><%= booking.customer.name %></div>
+                  <div class="text-xs text-admin-text-muted mt-0.5"><%= booking.customer.email %></div>
+                  <div class="text-xs text-admin-text-muted"><%= booking.customer.phone %></div>
+                </td>
+
+                <!-- Service Details -->
+                <td class="px-6 py-4">
+                  <div class="font-medium text-white"><%= booking.service.name %></div>
+                  <div class="text-xs text-admin-tertiary mt-0.5"><%= number_to_currency(booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></div>
+                </td>
+
+                <!-- Notes -->
+                <td class="px-6 py-4 text-xs text-admin-text-muted max-w-xs truncate" title="<%= booking.notes %>">
+                  <%= booking.notes.present? ? booking.notes : "-" %>
+                </td>
+
+                <!-- Status Badge -->
+                <td class="px-6 py-4">
+                  <% status_classes = case booking.status
+                     when 'pending' then 'bg-amber-950/40 text-amber-400 border border-amber-800/35'
+                     when 'confirmed' then 'bg-blue-950/40 text-blue-400 border border-blue-800/35'
+                     when 'completed' then 'bg-emerald-950/40 text-emerald-400 border border-emerald-800/35'
+                     when 'cancelled' then 'bg-red-950/40 text-red-400 border border-red-800/35'
+                     else 'bg-admin-surface-highest text-admin-text-muted border border-admin-outline'
+                     end %>
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider <%= status_classes %>">
+                    <%= booking.status.upcase %>
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <% if booking.status == 'pending' %>
+                      <%= button_to "Confirm", admin_booking_path(booking), method: :patch, params: { booking: { status: 'confirmed' } }, class: "px-3 py-1 rounded bg-blue-950/50 hover:bg-blue-900/60 text-blue-400 border border-blue-800/40 text-xs font-medium cursor-pointer transition-colors" %>
+                    <% end %>
+
+                    <% if ['pending', 'confirmed'].include?(booking.status) %>
+                      <%= button_to "Complete", admin_booking_path(booking), method: :patch, params: { booking: { status: 'completed' } }, class: "px-3 py-1 rounded bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-800/40 text-xs font-medium cursor-pointer transition-colors" %>
+                      <%= button_to "Cancel", admin_booking_path(booking), method: :patch, params: { booking: { status: 'cancelled' } }, class: "px-3 py-1 rounded bg-red-950/50 hover:bg-red-900/60 text-red-400 border border-red-800/40 text-xs font-medium cursor-pointer transition-colors" %>
+                    <% end %>
+
+                    <%= button_to admin_booking_path(booking), method: :delete, data: { confirm: "Are you sure you want to delete this booking?" }, class: "px-3 py-1 rounded bg-admin-surface-high hover:bg-admin-surface-highest text-admin-text-muted border border-admin-outline-variant/50 text-xs font-medium cursor-pointer transition-colors" do %>
+                      Delete
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-admin-text-muted">
+        No bookings exist in the database.
+      </div>
+    <% end %>
+  </div>
+</div>

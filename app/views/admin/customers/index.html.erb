@@ -1,0 +1,68 @@
+<div class="space-y-8">
+  <!-- Header -->
+  <div>
+    <h1 class="text-3xl font-semibold tracking-tight text-white">Client Directory</h1>
+    <p class="text-sm text-admin-text-muted mt-1">Review the customer profiles, contacts, and booking activities.</p>
+  </div>
+
+  <!-- Customers Table Card -->
+  <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl overflow-hidden">
+    <% if @customers.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead>
+            <tr class="bg-admin-low border-b border-admin-outline-variant/50 text-admin-tertiary">
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Name</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Email</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Phone Number</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Status</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase text-right">Activity</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-outline-variant/30">
+            <% @customers.each do |customer| %>
+              <tr class="hover:bg-admin-low/40 transition-colors">
+                <!-- Name -->
+                <td class="px-6 py-4 font-semibold text-white">
+                  <%= customer.name %>
+                </td>
+
+                <!-- Email -->
+                <td class="px-6 py-4 text-admin-text">
+                  <%= customer.email %>
+                </td>
+
+                <!-- Phone -->
+                <td class="px-6 py-4 text-admin-text-muted">
+                  <%= customer.phone.present? ? customer.phone : "-" %>
+                </td>
+
+                <!-- Status -->
+                <td class="px-6 py-4">
+                  <% if customer.status == 'Active' %>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider bg-emerald-950/40 text-emerald-400 border border-emerald-800/35">
+                      ACTIVE
+                    </span>
+                  <% else %>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider bg-admin-surface-highest text-admin-text-muted border border-admin-outline">
+                      INACTIVE
+                    </span>
+                  <% end %>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-4 text-right">
+                  <%= link_to "View History &rarr;".html_safe, admin_customer_path(customer), class: "text-xs font-medium text-admin-primary hover:text-white transition-colors" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-admin-text-muted">
+        No clients found in the database.
+      </div>
+    <% end %>
+  </div>
+</div>

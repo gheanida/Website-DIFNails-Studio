@@ -1,0 +1,108 @@
+<div class="space-y-8">
+  <!-- Header -->
+  <div>
+    <%= link_to "&larr; Back to Client Directory".html_safe, admin_customers_path, class: "text-sm text-admin-primary hover:text-white transition-colors" %>
+    <h1 class="text-3xl font-semibold tracking-tight text-white mt-4"><%= @customer.name %></h1>
+    <p class="text-sm text-admin-text-muted mt-1">Detailed appointment history and client coordinates.</p>
+  </div>
+
+  <!-- Profile Card & Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Contact Info -->
+    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 md:col-span-2 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-admin-tertiary">Client Info</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <span class="text-xs text-admin-text-muted">Email Address</span>
+          <p class="text-sm font-medium text-white mt-0.5"><%= @customer.email %></p>
+        </div>
+        <div>
+          <span class="text-xs text-admin-text-muted">Phone Number</span>
+          <p class="text-sm font-medium text-white mt-0.5"><%= @customer.phone.present? ? @customer.phone : "-" %></p>
+        </div>
+        <div>
+          <span class="text-xs text-admin-text-muted">Account Status</span>
+          <p class="text-sm font-medium mt-0.5">
+            <span class="px-2 py-0.5 text-xs rounded-full font-semibold <%= @customer.status == 'Active' ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-800/35' : 'bg-admin-surface-highest text-admin-text-muted border border-admin-outline' %>">
+              <%= @customer.status %>
+            </span>
+          </p>
+        </div>
+        <div>
+          <span class="text-xs text-admin-text-muted">Member Since</span>
+          <p class="text-sm font-medium text-white mt-0.5"><%= @customer.created_at.strftime("%B %d, %Y") %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-full">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-admin-tertiary">Quick Metrics</h2>
+      <div class="space-y-4 my-2">
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-admin-text-muted">Total Bookings</span>
+          <span class="font-bold text-white"><%= @bookings.count %></span>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-admin-text-muted">Completed Visits</span>
+          <span class="font-bold text-emerald-400"><%= @bookings.where(status: 'completed').count %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookings History -->
+  <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl overflow-hidden">
+    <div class="p-6 border-b border-admin-outline-variant/30">
+      <h2 class="text-lg font-semibold text-white">Appointment History</h2>
+    </div>
+
+    <% if @bookings.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead>
+            <tr class="bg-admin-low border-b border-admin-outline-variant/50 text-admin-tertiary">
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Date & Time</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Service Booked</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Notes</th>
+              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase text-right">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-outline-variant/30">
+            <% @bookings.each do |booking| %>
+              <tr class="hover:bg-admin-low/40 transition-colors">
+                <td class="px-6 py-4 font-medium text-admin-primary">
+                  <div class="font-semibold text-white"><%= booking.booking_date.strftime("%b %d, %Y") %></div>
+                  <div class="text-xs text-admin-tertiary mt-0.5"><%= booking.booking_time.strftime("%H:%M") %></div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="font-semibold text-white"><%= booking.service.name %></div>
+                  <div class="text-xs text-admin-tertiary mt-0.5"><%= number_to_currency(booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></div>
+                </td>
+                <td class="px-6 py-4 text-xs text-admin-text-muted truncate max-w-xs" title="<%= booking.notes %>">
+                  <%= booking.notes.present? ? booking.notes : "-" %>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <% status_classes = case booking.status
+                     when 'pending' then 'bg-amber-950/40 text-amber-400 border border-amber-800/35'
+                     when 'confirmed' then 'bg-blue-950/40 text-blue-400 border border-blue-800/35'
+                     when 'completed' then 'bg-emerald-950/40 text-emerald-400 border border-emerald-800/35'
+                     when 'cancelled' then 'bg-red-950/40 text-red-400 border border-red-800/35'
+                     else 'bg-admin-surface-highest text-admin-text-muted border border-admin-outline'
+                     end %>
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider <%= status_classes %>">
+                    <%= booking.status.upcase %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-admin-text-muted">
+        This client has no booking history.
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin Sign In - Obsidian & Velvet</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <style>
+      body {
+        font-family: var(--font-hanken), 'Hanken Grotesk', sans-serif;
+        background-color: var(--color-admin-bg, #131316);
+        color: var(--color-admin-text, #e4e2e5);
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center bg-admin-bg text-admin-text px-6 py-12">
+    <div class="w-full max-w-md bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-8 space-y-6 shadow-xl">
+      <!-- Title -->
+      <div class="text-center space-y-2">
+        <span class="text-xs font-semibold tracking-wider text-admin-primary uppercase">Staff Access</span>
+        <h1 class="text-2xl font-bold tracking-tight text-white">DIFNails Admin Portal</h1>
+        <p class="text-xs text-admin-text-muted">Enter credentials below to manage the salon queue.</p>
+      </div>
+
+      <!-- Devise Form -->
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+        <!-- Alert / Notice Messages inside the card -->
+        <% if flash[:alert] %>
+          <div class="p-3 text-xs rounded bg-red-950/40 border border-red-900/50 text-red-300">
+            <%= flash[:alert] %>
+          </div>
+        <% end %>
+        <% if flash[:notice] %>
+          <div class="p-3 text-xs rounded bg-admin-primary-container/20 border border-admin-outline-variant/50 text-admin-primary">
+            <%= flash[:notice] %>
+          </div>
+        <% end %>
+
+        <!-- Email Field -->
+        <div class="space-y-1.5">
+          <%= f.label :email, class: "block text-[10px] font-semibold uppercase tracking-wider text-admin-tertiary" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "w-full bg-admin-low text-white border border-admin-outline-variant rounded px-3 py-2 text-sm focus:border-admin-primary-container focus:outline-none transition-colors" %>
+        </div>
+
+        <!-- Password Field -->
+        <div class="space-y-1.5">
+          <%= f.label :password, class: "block text-[10px] font-semibold uppercase tracking-wider text-admin-tertiary" %>
+          <%= f.password_field :password, autocomplete: "current-password", required: true, class: "w-full bg-admin-low text-white border border-admin-outline-variant rounded px-3 py-2 text-sm focus:border-admin-primary-container focus:outline-none transition-colors" %>
+        </div>
+
+        <!-- Remember Me Checkbox -->
+        <% if devise_mapping.rememberable? %>
+          <div class="flex items-center gap-2">
+            <%= f.check_box :remember_me, class: "w-4 h-4 rounded bg-admin-low text-admin-primary-container border-admin-outline-variant focus:ring-0 focus:ring-offset-0 cursor-pointer" %>
+            <%= f.label :remember_me, "Keep me logged in", class: "text-xs text-admin-text-muted cursor-pointer select-none font-medium" %>
+          </div>
+        <% end %>
+
+        <!-- Submit Button -->
+        <div class="pt-2">
+          <%= f.submit "Access Dashboard", class: "w-full py-2.5 rounded bg-admin-primary-container text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all cursor-pointer border border-admin-outline-variant/30" %>
+        </div>
+      <% end %>
+
+      <!-- Back Link -->
+      <div class="text-center pt-2">
+        <%= link_to "&larr; Back to Public Salon Website".html_safe, root_path, class: "text-xs font-semibold uppercase tracking-wider text-admin-primary hover:text-white transition-colors" %>
+      </div>
+    </div>
+  </body>
+</html>

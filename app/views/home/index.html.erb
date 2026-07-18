@@ -1,4 +1,108 @@
-<div>
-  <h1 class="font-bold text-4xl">Home#index</h1>
-  <p>Find me in app/views/home/index.html.erb</p>
+<div class="space-y-24">
+  <!-- Hero Section -->
+  <section class="relative py-16 md:py-28 flex flex-col md:flex-row items-center justify-between gap-12 border-b border-customer-outline-variant/30">
+    <div class="max-w-xl space-y-6 text-left">
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-customer-primary">Indulge & Unwind</span>
+      <h1 class="font-serif text-5xl md:text-6xl font-bold tracking-tight text-customer-primary leading-tight">
+        Aesthetic Nail Care for the Modern Mind
+      </h1>
+      <p class="text-base md:text-lg text-customer-text-muted leading-relaxed">
+        Experience quiet luxury and premium nail artistry at DIFNails. We craft bespoke gel extensions, magnetic velvet sets, and restorative spa manicures designed around wellness and timeless elegance.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <%= link_to "Book Appointment", new_customer_booking_path, class: "px-8 py-3.5 rounded-full bg-customer-tertiary text-white text-sm font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm" %>
+        <%= link_to "Explore Services", services_path, class: "px-8 py-3.5 rounded-full border border-customer-primary text-customer-primary text-sm font-semibold uppercase tracking-wider hover:bg-customer-primary hover:text-white transition-all" %>
+      </div>
+    </div>
+    
+    <!-- Hero Image Showcase with large rounded frame (xl -> 24px) -->
+    <div class="relative w-full max-w-md h-96 md:h-[450px] overflow-hidden rounded-t-[24px] rounded-b-[8px] border border-customer-outline-variant/40 shadow-lg">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800&auto=format&fit=crop" 
+           alt="Premium Nail Art" 
+           class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-customer-primary/20 to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- Philosophy / Quiet Luxury Section -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-8 py-8">
+    <div class="space-y-3">
+      <span class="font-serif text-2xl font-medium text-customer-primary">I. Bespoke Design</span>
+      <p class="text-sm text-customer-text-muted leading-relaxed">
+        Every appointment starts with a personalized consultation to match length, color, and nail shape to your unique proportions.
+      </p>
+    </div>
+    <div class="space-y-3">
+      <span class="font-serif text-2xl font-medium text-customer-primary">II. Clean Formulations</span>
+      <p class="text-sm text-customer-text-muted leading-relaxed">
+        We prioritize high-end, low-toxicity gel formulations and nourishing botanical scrubs to care for your skin and nails.
+      </p>
+    </div>
+    <div class="space-y-3">
+      <span class="font-serif text-2xl font-medium text-customer-primary">III. Peaceful Sanctuary</span>
+      <p class="text-sm text-customer-text-muted leading-relaxed">
+        Step into a calm, quiet atmosphere designed to give you a true respite from the busy outside world.
+      </p>
+    </div>
+  </section>
+
+  <!-- Featured Services Section -->
+  <section class="space-y-12">
+    <div class="text-center space-y-3">
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-customer-primary">Our Signature Treatments</span>
+      <h2 class="font-serif text-3xl md:text-4xl font-semibold text-customer-primary">Featured Services</h2>
+      <p class="text-sm text-customer-text-muted max-w-md mx-auto">Discover a selection of our client favorites and unique artistic treatments.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <% if @featured_services.any? %>
+        <% @featured_services.each do |service| %>
+          <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-b-lg rounded-t-[24px] overflow-hidden group hover:shadow-md transition-all duration-300">
+            <div class="h-64 overflow-hidden relative">
+              <% if service.image_url.present? %>
+                <img src="<%= service.image_url %>" alt="<%= service.name %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <% else %>
+                <div class="w-full h-full bg-customer-surface-high flex items-center justify-center text-customer-primary font-serif">DIFNails</div>
+              <% end %>
+              <span class="absolute top-4 right-4 bg-customer-bg/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-customer-primary border border-customer-outline-variant/30">
+                <%= service.service_category.name %>
+              </span>
+            </div>
+            
+            <div class="p-6 space-y-4">
+              <div class="flex justify-between items-start">
+                <h3 class="font-serif text-xl font-semibold text-customer-primary"><%= service.name %></h3>
+                <span class="font-semibold text-sm text-customer-tertiary">
+                  <%= number_to_currency(service.price, unit: "Rp ", precision: 0, delimiter: ".") %>
+                </span>
+              </div>
+              <p class="text-xs text-customer-text-muted leading-relaxed line-clamp-2">
+                <%= service.description %>
+              </p>
+              <%= link_to "View Details", service_path(service), class: "inline-block text-xs font-semibold uppercase tracking-wider text-customer-primary hover:text-customer-tertiary transition-colors" %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="col-span-3 text-center py-12 text-customer-text-muted">
+          No services seeded yet.
+        </div>
+      <% end %>
+    </div>
+
+    <div class="text-center pt-4">
+      <%= link_to "View Full Menu &rarr;".html_safe, services_path, class: "inline-block text-sm font-semibold uppercase tracking-wider text-customer-primary hover:text-customer-tertiary transition-colors" %>
+    </div>
+  </section>
+
+  <!-- CTA Banner Section -->
+  <section class="bg-customer-surface border border-customer-outline-variant/40 rounded-[24px] p-8 md:p-12 text-center space-y-6 max-w-4xl mx-auto">
+    <h2 class="font-serif text-3xl font-semibold text-customer-primary">Ready to schedule your experience?</h2>
+    <p class="text-sm text-customer-text-muted max-w-lg mx-auto leading-relaxed">
+      Reserve your preferred treatment, date, and artist today. Walk-ins are accommodated based on availability, but bookings are highly recommended.
+    </p>
+    <div>
+      <%= link_to "Book Your Visit Now", new_customer_booking_path, class: "inline-block px-8 py-3.5 rounded-full bg-customer-tertiary text-white text-sm font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm" %>
+    </div>
+  </section>
 </div>

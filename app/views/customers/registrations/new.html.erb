@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register - DIFNails</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <style>
+      body {
+        font-family: var(--font-dm), 'DM Sans', sans-serif;
+        background-color: var(--color-customer-bg, #fff8f7);
+        color: var(--color-customer-text, #221919);
+      }
+      h1, h2, h3, .font-serif {
+        font-family: var(--font-bodoni), 'Bodoni Moda', serif;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center bg-customer-bg text-customer-text px-6 py-12">
+    <div class="w-full max-w-md bg-customer-lowest border border-customer-outline-variant/30 rounded-[24px] p-8 space-y-6 shadow-md">
+      <!-- Title -->
+      <div class="text-center space-y-2">
+        <span class="text-xs font-semibold tracking-wider text-customer-primary uppercase">Join Us</span>
+        <h1 class="font-serif text-3xl font-bold text-customer-primary">Create Account</h1>
+        <p class="text-xs text-customer-text-muted">Register to schedule appointments and view your session details.</p>
+      </div>
+
+      <!-- Devise Form -->
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+        <!-- Error messages -->
+        <% if resource.errors.any? %>
+          <div class="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+            <h2 class="font-semibold mb-2"><%= pluralize(resource.errors.count, "error") %> prohibited sign up:</h2>
+            <ul class="list-disc pl-5 space-y-1">
+              <% resource.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <!-- Name Field -->
+        <div class="space-y-1.5">
+          <%= f.label :name, "Full Name", class: "block text-[10px] font-semibold uppercase tracking-wider text-customer-primary" %>
+          <%= f.text_field :name, autofocus: true, required: true, class: "w-full bg-customer-bg text-customer-text border-b-2 border-t-0 border-x-0 border-customer-tertiary px-3 py-2 text-sm focus:ring-0 focus:border-customer-primary transition-colors" %>
+        </div>
+
+        <!-- Phone Field -->
+        <div class="space-y-1.5">
+          <%= f.label :phone, "Phone Number", class: "block text-[10px] font-semibold uppercase tracking-wider text-customer-primary" %>
+          <%= f.telephone_field :phone, required: true, class: "w-full bg-customer-bg text-customer-text border-b-2 border-t-0 border-x-0 border-customer-tertiary px-3 py-2 text-sm focus:ring-0 focus:border-customer-primary transition-colors" %>
+        </div>
+
+        <!-- Email Field -->
+        <div class="space-y-1.5">
+          <%= f.label :email, "Email Address", class: "block text-[10px] font-semibold uppercase tracking-wider text-customer-primary" %>
+          <%= f.email_field :email, autocomplete: "email", required: true, class: "w-full bg-customer-bg text-customer-text border-b-2 border-t-0 border-x-0 border-customer-tertiary px-3 py-2 text-sm focus:ring-0 focus:border-customer-primary transition-colors" %>
+        </div>
+
+        <!-- Password Field -->
+        <div class="space-y-1.5">
+          <%= f.label :password, class: "block text-[10px] font-semibold uppercase tracking-wider text-customer-primary" %>
+          <%= f.password_field :password, autocomplete: "new-password", required: true, class: "w-full bg-customer-bg text-customer-text border-b-2 border-t-0 border-x-0 border-customer-tertiary px-3 py-2 text-sm focus:ring-0 focus:border-customer-primary transition-colors" %>
+          <% if @minimum_password_length %>
+            <p class="text-[10px] text-customer-text-muted">(<%= @minimum_password_length %> characters minimum)</p>
+          <% end %>
+        </div>
+
+        <!-- Password Confirmation -->
+        <div class="space-y-1.5">
+          <%= f.label :password_confirmation, "Confirm Password", class: "block text-[10px] font-semibold uppercase tracking-wider text-customer-primary" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, class: "w-full bg-customer-bg text-customer-text border-b-2 border-t-0 border-x-0 border-customer-tertiary px-3 py-2 text-sm focus:ring-0 focus:border-customer-primary transition-colors" %>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-2">
+          <%= f.submit "Register Account", class: "w-full py-3 rounded-full bg-customer-tertiary text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all cursor-pointer shadow-sm" %>
+        </div>
+      <% end %>
+
+      <!-- Links -->
+      <div class="flex flex-col items-center gap-2 pt-2 text-xs text-customer-text-muted">
+        <p>Already have an account? <%= link_to "Log In Here", new_session_path(resource_name), class: "font-semibold text-customer-primary hover:text-customer-tertiary hover:underline" %></p>
+        <p><%= link_to "&larr; Back to Home Page".html_safe, root_path, class: "font-semibold text-customer-primary hover:text-customer-tertiary transition-colors" %></p>
+      </div>
+    </div>
+  </body>
+</html>
