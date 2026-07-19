@@ -1,57 +1,63 @@
-<div class="space-y-16">
-  <!-- Title and Header -->
-  <div class="text-center space-y-4">
-    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-customer-primary">Our Treatment Catalog</span>
-    <h1 class="font-serif text-4xl md:text-5xl font-bold tracking-tight text-customer-primary">Salon Services</h1>
-    <p class="text-sm text-customer-text-muted max-w-md mx-auto">Explore our menu of artistic nail solutions and restorative hand and foot therapies.</p>
+<div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
+  <!-- Hero -->
+  <div class="text-center mb-12">
+    <h1 class="font-['Bodoni_Moda'] text-4xl sm:text-5xl text-customer-primary mb-4">Our Service Catalog</h1>
+    <p class="text-customer-text-muted max-w-2xl mx-auto italic">
+      Indulge in a curated collection of premium nail artistry and therapeutic treatments designed for the modern connoisseur.
+    </p>
   </div>
 
-  <!-- Category Filter Pills -->
-  <div class="flex flex-wrap justify-center gap-3">
-    <%= link_to "All Services", services_path, class: "px-5 py-2 rounded-full text-xs font-semibold tracking-wider uppercase border border-customer-outline transition-all cursor-pointer #{params[:category_id].blank? ? 'bg-customer-primary text-white border-customer-primary' : 'bg-transparent text-customer-primary hover:bg-customer-primary-container/30'}" %>
-    
-    <% @categories.each do |cat| %>
-      <%= link_to cat.name, services_path(category_id: cat.id), class: "px-5 py-2 rounded-full text-xs font-semibold tracking-wider uppercase border border-customer-outline transition-all cursor-pointer #{params[:category_id].to_s == cat.id.to_s ? 'bg-customer-primary text-white border-customer-primary' : 'bg-transparent text-customer-primary hover:bg-customer-primary-container/30'}" %>
+  <!-- Search -->
+  <%= form_with url: services_path, method: :get, local: true, class: "max-w-md mx-auto mb-8" do %>
+    <div class="relative">
+      <%= text_field_tag :q, params[:q], placeholder: "Cari layanan...", class: "w-full pl-5 pr-5 py-3 rounded-full border border-customer-outline-variant/30 bg-white focus:outline-none focus:border-customer-primary transition-colors" %>
+      <% if params[:category_id].present? %>
+        <%= hidden_field_tag :category_id, params[:category_id] %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- Category Filter -->
+  <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-12">
+    <%= link_to "Semua", services_path(q: params[:q]),
+        class: "px-6 sm:px-8 py-2 rounded-full border border-customer-tertiary/30 text-sm transition-all #{params[:category_id].blank? ? 'bg-customer-primary text-white' : 'bg-white text-customer-text-muted hover:bg-customer-primary-container/30'}" %>
+    <% @categories.each do |category| %>
+      <%= link_to category.name, services_path(category_id: category.id, q: params[:q]),
+          class: "px-6 sm:px-8 py-2 rounded-full border border-customer-tertiary/30 text-sm transition-all #{params[:category_id].to_i == category.id ? 'bg-customer-primary text-white' : 'bg-white text-customer-text-muted hover:bg-customer-primary-container/30'}" %>
     <% end %>
   </div>
 
   <!-- Services Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    <% if @services.any? %>
+  <% if @services.empty? %>
+    <div class="text-center py-16">
+      <p class="text-customer-text-muted">Tidak ada layanan yang cocok dengan pencarian Anda.</p>
+    </div>
+  <% else %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
       <% @services.each do |service| %>
-        <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-b-lg rounded-t-[24px] overflow-hidden group hover:shadow-md transition-all duration-300">
-          <div class="h-64 overflow-hidden relative">
+        <div class="bg-white/60 border border-customer-outline-variant/20 rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1 shadow-sm group">
+          <div class="relative h-56 sm:h-64 overflow-hidden bg-customer-surface-container">
             <% if service.image_url.present? %>
-              <img src="<%= service.image_url %>" alt="<%= service.name %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            <% else %>
-              <div class="w-full h-full bg-customer-surface-high flex items-center justify-center text-customer-primary font-serif">DIFNails</div>
+              <%= image_tag service.image_url, class: "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" %>
             <% end %>
-            <span class="absolute top-4 right-4 bg-customer-bg/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-customer-primary border border-customer-outline-variant/30">
-              <%= service.service_category.name %>
-            </span>
+            <% if service.service_category %>
+              <div class="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-full text-xs text-customer-primary">
+                <%= service.service_category.name %>
+              </div>
+            <% end %>
           </div>
-          
-          <div class="p-6 space-y-4">
-            <div class="flex justify-between items-start">
-              <h3 class="font-serif text-xl font-semibold text-customer-primary"><%= service.name %></h3>
-              <span class="font-semibold text-sm text-customer-tertiary">
-                <%= number_to_currency(service.price, unit: "Rp ", precision: 0, delimiter: ".") %>
-              </span>
-            </div>
-            <p class="text-xs text-customer-text-muted leading-relaxed line-clamp-2">
-              <%= service.description %>
-            </p>
-            <div class="flex items-center justify-between pt-2 border-t border-customer-outline-variant/20">
-              <%= link_to "View Details", service_path(service), class: "text-xs font-semibold uppercase tracking-wider text-customer-primary hover:text-customer-tertiary transition-colors" %>
-              <%= link_to "Book Now", new_customer_booking_path(service_id: service.id), class: "text-xs font-bold uppercase tracking-wider text-customer-tertiary hover:underline transition-colors" %>
+          <div class="p-6 sm:p-8">
+            <h3 class="font-['Bodoni_Moda'] text-xl text-customer-text mb-2"><%= service.name %></h3>
+            <p class="text-sm text-customer-text-muted mb-6 line-clamp-2"><%= service.description %></p>
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-customer-primary"><%= number_to_currency(service.price, unit: "Rp ", precision: 0, delimiter: ".") %></span>
+              <%= link_to service_path(service), class: "flex items-center gap-1 text-customer-primary text-sm font-medium hover:gap-2 transition-all" do %>
+                Details →
+              <% end %>
             </div>
           </div>
         </div>
       <% end %>
-    <% else %>
-      <div class="col-span-3 text-center py-16 text-customer-text-muted">
-        No active services found in this category.
-      </div>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </div>

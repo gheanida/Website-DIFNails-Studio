@@ -1,0 +1,31 @@
+<div class="max-w-3xl mx-auto">
+  <div class="text-center mb-10">
+    <h1 class="font-['Bodoni_Moda'] text-3xl text-customer-primary mb-2">Riwayat Booking Saya</h1>
+    <p class="text-customer-text-muted">Masukkan nomor HP Anda untuk melihat riwayat reservasi.</p>
+  </div>
+
+  <%= form_with url: history_bookings_path, method: :get, local: true, class: "mb-12" do %>
+    <div class="relative max-w-md mx-auto">
+      <%= text_field_tag :phone, params[:phone], placeholder: "Contoh: 081234567890", class: "w-full bg-customer-lowest border border-customer-outline-variant/30 rounded-full py-3 px-6 focus:outline-none focus:border-customer-primary" %>
+      <%= submit_tag "Cari", class: "absolute right-2 top-1/2 -translate-y-1/2 bg-customer-primary text-white px-5 py-2 rounded-full text-sm cursor-pointer hover:opacity-90" %>
+    </div>
+  <% end %>
+
+  <% if params[:phone].present? %>
+    <% if @customer.nil? %>
+      <div class="text-center bg-customer-surface-container rounded-2xl p-8">
+        <p class="text-customer-text-muted">Nomor HP tidak ditemukan.</p>
+      </div>
+    <% elsif @bookings.empty? %>
+      <div class="text-center bg-customer-surface-container rounded-2xl p-8">
+        <p class="text-customer-text-muted">Belum ada riwayat booking untuk nomor ini.</p>
+      </div>
+    <% else %>
+      <div class="space-y-8">
+        <% @bookings.each do |booking| %>
+          <%= render "booking_card", booking: booking %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
