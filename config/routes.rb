@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
   resources :services, only: [:index, :show]
+
+  get '/bookings/history', to: 'bookings#history', as: :history_bookings
+  get '/bookings/new_time', to: 'bookings#new_time', as: :new_time_bookings
   resources :bookings, only: [:index, :new, :create, :show]
 
   namespace :admin do

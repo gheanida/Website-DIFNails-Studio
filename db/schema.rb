@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_18_050954) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_18_101622) do
   create_table "admin_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -43,7 +43,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_18_050954) do
     t.string "phone"
     t.string "status"
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_customers_on_email", unique: true
   end
 
   create_table "service_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -55,6 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_18_050954) do
   create_table "services", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
+    t.integer "duration_minutes"
     t.string "image_url"
     t.boolean "is_active"
     t.string "name"

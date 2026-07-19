@@ -1,62 +1,51 @@
-<div class="space-y-8 max-w-xl mx-auto">
-  <!-- Back Link -->
-  <%= link_to "&larr; Back to My Appointments".html_safe, customer_bookings_path, class: "text-sm text-customer-primary hover:text-customer-tertiary transition-colors" %>
+<div class="max-w-3xl mx-auto text-center">
+  <%= render "stepper", current_step: 3 %>
 
-  <!-- Booking Details Card -->
-  <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-[24px] overflow-hidden shadow-sm">
-    <div class="p-8 bg-customer-surface border-b border-customer-outline-variant/30 flex justify-between items-center">
-      <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wider text-customer-primary font-semibold">Appointment Details</span>
-        <h1 class="font-serif text-2xl font-semibold text-customer-primary">Receipt & Summary</h1>
+  <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-customer-primary-container flex items-center justify-center text-customer-primary text-4xl">
+    ✓
+  </div>
+  <h1 class="font-['Bodoni_Moda'] text-3xl text-customer-primary mb-2">Reservasi Berhasil!</h1>
+  <p class="text-customer-text-muted mb-8">Terima kasih telah memilih DIFNails. Simpan nomor HP Anda untuk mengecek status booking kapan saja.</p>
+
+  <%= render "booking_card", booking: @booking %>
+
+  <div class="mt-8 flex flex-col sm:flex-row gap-4">
+    <%= link_to "Cek Booking Saya", history_bookings_path(phone: @booking.customer.phone), class: "flex-1 bg-customer-primary text-white py-4 rounded-full font-medium hover:opacity-90 transition-all" %>
+    <%= link_to "Kembali ke Beranda", root_path, class: "flex-1 border border-customer-primary text-customer-primary py-4 rounded-full font-medium hover:bg-customer-primary-container/20 transition-all" %>
+  </div>
+
+  <p class="mt-8 text-sm text-customer-text-muted italic">*Mohon datang 10 menit sebelum jadwal reservasi dimulai.</p>
+</div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase">Layanan</span>
+        <p class="font-semibold text-customer-text"><%= @booking.service.name %></p>
       </div>
-      <% status_classes = case @booking.status
-         when 'pending' then 'bg-amber-50 text-amber-700 border border-amber-200'
-         when 'confirmed' then 'bg-blue-50 text-blue-700 border border-blue-200'
-         when 'completed' then 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-         when 'cancelled' then 'bg-red-50 text-red-700 border border-red-200'
-         else 'bg-customer-surface-high text-customer-text-muted border border-customer-outline-variant'
-         end %>
-      <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase <%= status_classes %>">
-        <%= @booking.status %>
-      </span>
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase">Tanggal</span>
+        <p class="font-semibold text-customer-text"><%= @booking.booking_date.strftime("%d %b %Y") %></p>
+      </div>
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase">Waktu</span>
+        <p class="font-semibold text-customer-text"><%= @booking.booking_time.strftime("%H:%M") %> WIB</p>
+      </div>
+      <div>
+        <span class="text-xs text-customer-text-muted uppercase">Atas Nama</span>
+        <p class="font-semibold text-customer-text"><%= @booking.customer.name %></p>
+      </div>
     </div>
 
-    <div class="p-8 space-y-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
-          <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Date</span>
-          <p class="text-base font-semibold text-customer-primary mt-1"><%= @booking.booking_date.strftime("%B %d, %Y") %></p>
-        </div>
-        <div>
-          <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Scheduled Time</span>
-          <p class="text-base font-semibold text-customer-primary mt-1"><%= @booking.booking_time.strftime("%H:%M") %></p>
-        </div>
-        <div class="sm:col-span-2">
-          <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Treatment Selected</span>
-          <p class="text-base font-bold text-customer-primary mt-1"><%= @booking.service.name %></p>
-          <p class="text-xs text-customer-text-muted mt-1"><%= @booking.service.description %></p>
-        </div>
-        <div>
-          <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Estimated Cost</span>
-          <p class="text-base font-serif font-bold text-customer-tertiary mt-1"><%= number_to_currency(@booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></p>
-        </div>
-        <div>
-          <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Client Name</span>
-          <p class="text-sm font-semibold text-customer-primary mt-1"><%= @booking.customer.name %></p>
-        </div>
-        <% if @booking.notes.present? %>
-          <div class="sm:col-span-2">
-            <span class="text-xs text-customer-text-muted uppercase tracking-wider font-semibold">Special Instructions</span>
-            <p class="text-sm text-customer-text italic mt-1 bg-customer-bg p-3 rounded-lg border border-customer-outline-variant/30">
-              "<%= @booking.notes %>"
-            </p>
-          </div>
-        <% end %>
-      </div>
-
-      <div class="pt-6 border-t border-customer-outline-variant/20 text-center text-xs text-customer-text-muted space-y-2">
-        <p>If you need to change your reservation details, please contact us at support@difnails.com or call +628123456789.</p>
-      </div>
+    <div class="mt-8 pt-6 border-t border-dashed border-customer-outline-variant/40 flex justify-between items-center">
+      <span class="font-semibold text-customer-text">Total</span>
+      <span class="text-xl font-bold text-customer-primary"><%= number_to_currency(@booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></span>
     </div>
   </div>
+
+  <div class="mt-8 flex flex-col sm:flex-row gap-4">
+    <%= link_to "Cek Booking Saya", bookings_path(phone: @booking.customer.phone), class: "flex-1 bg-customer-primary text-white py-4 rounded-full font-medium hover:opacity-90 transition-all" %>
+    <%= link_to "Kembali ke Beranda", root_path, class: "flex-1 border border-customer-primary text-customer-primary py-4 rounded-full font-medium hover:bg-customer-primary-container/20 transition-all" %>
+  </div>
+
+  <p class="mt-8 text-sm text-customer-text-muted italic">*Mohon datang 10 menit sebelum jadwal reservasi dimulai.</p>
 </div>

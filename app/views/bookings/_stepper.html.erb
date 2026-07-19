@@ -1,0 +1,20 @@
+<div class="flex items-center justify-center gap-4 mb-12">
+  <div class="flex items-center gap-2">
+    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm <%= current_step >= 1 ? 'bg-customer-primary-container text-customer-on-primary-container' : 'bg-customer-surface-container text-customer-text-muted' %>">
+      <% if current_step > 1 %>✓<% else %>1<% end %>
+    </div>
+    <span class="text-xs <%= current_step == 1 ? 'text-customer-primary font-bold' : 'text-customer-text-muted' %> hidden sm:block">Pilih Layanan</span>
+  </div>
+  <div class="w-12 h-px bg-customer-outline-variant"></div>
+  <div class="flex items-center gap-2">
+    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm <%= current_step >= 2 ? 'bg-customer-primary-container text-customer-on-primary-container' : 'bg-customer-surface-container text-customer-text-muted' %>">
+      <% if current_step > 2 %>✓<% else %>2<% end %>
+    </div>
+    <span class="text-xs <%= current_step == 2 ? 'text-customer-primary font-bold' : 'text-customer-text-muted' %> hidden sm:block">Waktu & Detail</span>
+  </div>
+  <div class="w-12 h-px bg-customer-outline-variant"></div>
+  <div class="flex items-center gap-2">
+    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm <%= current_step >= 3 ? 'bg-customer-primary text-white' : 'bg-customer-surface-container text-customer-text-muted' %>">3</div>
+    <span class="text-xs <%= current_step == 3 ? 'text-customer-primary font-bold' : 'text-customer-text-muted' %> hidden sm:block">Konfirmasi</span>
+  </div>
+</div>

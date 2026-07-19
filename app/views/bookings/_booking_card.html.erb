@@ -1,0 +1,38 @@
+<div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-3xl p-8 text-left relative overflow-hidden">
+  <div class="absolute -top-16 -right-16 w-48 h-48 bg-customer-primary-container/20 rounded-full blur-3xl -z-10"></div>
+
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-6 border-b border-customer-outline-variant/30">
+    <div>
+      <span class="text-xs text-customer-text-muted uppercase tracking-widest">ID Booking</span>
+      <h2 class="text-lg font-semibold text-customer-primary mt-1">BK-<%= booking.id.to_s.rjust(4, '0') %></h2>
+    </div>
+    <span class="bg-customer-surface-container px-4 py-2 rounded-full text-sm text-customer-primary capitalize flex items-center gap-2 mt-3 md:mt-0">
+      <span class="w-2 h-2 rounded-full bg-customer-primary"></span>
+      <%= booking.status %>
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+    <div class="space-y-1">
+      <span class="text-xs text-customer-text-muted uppercase tracking-wider">Layanan</span>
+      <p class="font-bold text-customer-text"><%= booking.service.name %></p>
+    </div>
+    <div class="space-y-1">
+      <span class="text-xs text-customer-text-muted uppercase tracking-wider">Tanggal</span>
+      <p class="font-bold text-customer-text"><%= booking.booking_date.strftime("%d %b %Y") %></p>
+    </div>
+    <div class="space-y-1">
+      <span class="text-xs text-customer-text-muted uppercase tracking-wider">Waktu</span>
+      <p class="font-bold text-customer-text"><%= booking.booking_time.strftime("%H:%M") %> WIB</p>
+    </div>
+    <div class="space-y-1">
+      <span class="text-xs text-customer-text-muted uppercase tracking-wider">Atas Nama</span>
+      <p class="font-bold text-customer-text"><%= booking.customer.name %></p>
+    </div>
+  </div>
+
+  <div class="mt-8 pt-6 border-t-2 border-dashed border-customer-outline-variant/40 flex justify-between items-center">
+    <span class="font-semibold text-customer-text">Total</span>
+    <span class="text-xl font-bold text-customer-primary"><%= number_to_currency(booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></span>
+  </div>
+</div>

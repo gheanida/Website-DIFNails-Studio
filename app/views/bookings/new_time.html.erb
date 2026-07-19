@@ -1,0 +1,123 @@
+<div class="max-w-5xl mx-auto">
+  <%= render "stepper", current_step: 2 %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+
+      <!-- Pilih Tanggal -->
+      <section class="bg-customer-lowest border border-customer-outline-variant/30 rounded-3xl p-8 shadow-sm">
+        <h2 class="font-['Bodoni_Moda'] text-xl text-customer-primary mb-6">Pilih Tanggal Kedatangan</h2>
+        <div class="grid grid-cols-7 gap-2">
+          <% @calendar_days.each do |day| %>
+            <%= link_to new_time_bookings_path(service_id: @service.id, date: day.iso8601, time: @selected_time),
+                class: "aspect-square flex flex-col items-center justify-center rounded-xl text-sm #{day == @selected_date ? 'bg-customer-primary text-white' : 'bg-customer-surface-container hover:bg-customer-primary-container text-customer-text'}" do %>
+              <span class="text-[10px] opacity-70"><%= day.strftime("%a") %></span>
+              <span class="font-semibold"><%= day.day %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
+
+      <!-- Pilih Waktu -->
+      <section class="bg-customer-lowest border border-customer-outline-variant/30 rounded-3xl p-8 shadow-sm">
+        <h2 class="font-['Bodoni_Moda'] text-xl text-customer-primary mb-6">Pilih Waktu</h2>
+        <% @time_slots.each do |period, slots| %>
+          <div class="mb-6">
+            <h3 class="text-xs uppercase tracking-wider text-customer-text-muted mb-3"><%= period %></h3>
+            <div class="grid grid-cols-3 md:grid-cols-4 gap-3">
+              <% slots.each do |slot| %>
+                <% booked = @booked_times.include?(slot) %>
+                <% if booked %>
+                  <span class="py-3 px-4 rounded-xl text-sm bg-customer-surface-container text-customer-outline-variant line-through text-center">
+                    <%= slot %>
+                  </span>
+                <% else %>
+                  <%= link_to slot, new_time_bookings_path(service_id: @service.id, date: @selected_date, time: slot),
+                      class: "py-3 px-4 rounded-xl text-sm text-center border #{@selected_time == slot ? 'bg-customer-primary-container text-customer-on-primary-container border-customer-primary font-bold' : 'border-customer-outline-variant text-customer-text hover:border-customer-primary'}" %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </section>
+
+      <!-- Detail Pelanggan -->
+      <section class="bg-customer-lowest border border-customer-outline-variant/30 rounded-3xl p-8 shadow-sm">
+        <h2 class="font-['Bodoni_Moda'] text-xl text-customer-primary mb-6">Detail Pelanggan</h2>
+
+        <% if @booking.errors.any? %>
+          <div class="p-4 mb-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+            <ul class="list-disc pl-5">
+              <% @booking.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <% unless @selected_time %>
+          <p class="text-sm text-customer-primary bg-customer-primary-container/20 p-3 rounded-lg mb-4">Silakan pilih waktu terlebih dahulu di atas.</p>
+        <% end %>
+
+        <%= form_with model: @booking, url: bookings_path, local: true, class: "space-y-4" do |f| %>
+          <%= hidden_field_tag "booking[service_id]", @service.id %>
+          <%= hidden_field_tag "booking[booking_date]", @selected_date %>
+          <%= hidden_field_tag "booking[booking_time]", @selected_time %>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <%= label_tag "booking_name", "Nama Lengkap", class: "block text-xs uppercase text-customer-primary mb-1" %>
+              <%= text_field_tag "booking[name]", params[:name], required: true, placeholder: "Nama Anda", class: "w-full border-b-2 border-customer-outline-variant py-2 bg-transparent focus:outline-none focus:border-customer-primary" %>
+            </div>
+            <div>
+              <%= label_tag "booking_phone", "Nomor WhatsApp", class: "block text-xs uppercase text-customer-primary mb-1" %>
+              <%= text_field_tag "booking[phone]", params[:phone], required: true, placeholder: "0812xxxx", class: "w-full border-b-2 border-customer-outline-variant py-2 bg-transparent focus:outline-none focus:border-customer-primary" %>
+            </div>
+          </div>
+          <div>
+            <%= f.label :notes, "Catatan Tambahan (Opsional)", class: "block text-xs uppercase text-customer-primary mb-1" %>
+            <%= f.text_area :notes, rows: 3, placeholder: "Alergi tertentu atau permintaan khusus...", class: "w-full border border-customer-outline-variant rounded-xl p-3 bg-transparent focus:outline-none focus:border-customer-primary" %>
+          </div>
+
+          <%= f.submit "Konfirmasi & Pesan", class: "w-full bg-customer-primary text-white py-4 rounded-full font-semibold hover:opacity-90 transition-all cursor-pointer" %>
+        <% end %>
+      </section>
+    </div>
+
+    <!-- Ringkasan Sidebar -->
+    <aside class="lg:col-span-1">
+      <div class="sticky top-24 bg-customer-lowest border border-customer-outline-variant/30 rounded-3xl overflow-hidden shadow-sm">
+        <div class="p-6 bg-customer-primary-container/10 border-b border-customer-outline-variant/20">
+          <h3 class="font-['Bodoni_Moda'] text-lg text-customer-primary">Ringkasan Pesanan</h3>
+        </div>
+        <div class="p-6 space-y-4">
+          <div class="flex items-start gap-3">
+            <div class="w-16 h-16 rounded-xl overflow-hidden bg-customer-surface-container flex-shrink-0">
+              <% if @service.image_url.present? %>
+                <%= image_tag @service.image_url, class: "w-full h-full object-cover" %>
+              <% end %>
+            </div>
+            <div>
+              <p class="font-semibold text-customer-text"><%= @service.name %></p>
+              <p class="text-customer-primary text-sm"><%= number_to_currency(@service.price, unit: "Rp ", precision: 0, delimiter: ".") %></p>
+            </div>
+          </div>
+          <hr class="border-customer-outline-variant/20">
+          <div class="flex justify-between text-sm">
+            <span class="text-customer-text-muted">Tanggal</span>
+            <span class="font-semibold"><%= @selected_date.strftime("%d %b %Y") %></span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-customer-text-muted">Waktu</span>
+            <span class="font-semibold"><%= @selected_time || "Belum dipilih" %></span>
+          </div>
+          <hr class="border-customer-outline-variant/20">
+          <div class="flex justify-between font-bold text-customer-primary">
+            <span>Total</span>
+            <span><%= number_to_currency(@service.price, unit: "Rp ", precision: 0, delimiter: ".") %></span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

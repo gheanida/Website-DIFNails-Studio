@@ -1,67 +1,107 @@
-<div class="space-y-8 max-w-4xl mx-auto">
-  <!-- Header -->
-  <div class="flex justify-between items-center">
-    <div>
-      <h1 class="font-serif text-3xl font-bold text-customer-primary">My Appointments</h1>
-      <p class="text-sm text-customer-text-muted mt-1">View your booking history and upcoming salon visits.</p>
-    </div>
-    <%= link_to "Book New Visit", new_customer_booking_path, class: "px-6 py-2.5 rounded-full bg-customer-tertiary text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm" %>
+<div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+  <div class="text-center mb-12">
+    <h1 class="font-['Bodoni_Moda'] text-4xl text-customer-primary mb-2">Real-Time Queue</h1>
+    <p class="text-customer-text-muted max-w-2xl mx-auto">Kami menghargai waktu Anda. Pantau antrian salon kami secara langsung.</p>
   </div>
 
-  <!-- Bookings List -->
-  <div class="space-y-6">
-    <% if @bookings.any? %>
-      <% @bookings.each do |booking| %>
-        <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-[16px] p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-sm transition-all">
-          <div class="space-y-3">
-            <div class="flex items-center gap-3">
-              <!-- Date & Time -->
-              <span class="font-serif text-lg font-semibold text-customer-primary">
-                <%= booking.booking_date.strftime("%B %d, %Y") %>
-              </span>
-              <span class="text-sm text-customer-text-muted">&bull;</span>
-              <span class="text-sm font-medium text-customer-text">
-                <%= booking.booking_time.strftime("%H:%M") %>
-              </span>
-            </div>
-
-            <div class="space-y-1">
-              <h3 class="text-sm font-semibold text-customer-primary">
-                <%= booking.service.name %>
-              </h3>
-              <p class="text-xs text-customer-text-muted leading-relaxed">
-                Category: <%= booking.service.service_category.name %> &bull; Price: <%= number_to_currency(booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %>
-              </p>
-              <% if booking.notes.present? %>
-                <p class="text-xs italic text-customer-text-muted mt-1">
-                  Note: "<%= booking.notes %>"
-                </p>
-              <% end %>
-            </div>
+  <div class="grid grid-cols-12 gap-6">
+    <!-- Search & Current Serving -->
+    <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+      <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-xl p-8 shadow-sm">
+        <h2 class="font-['Bodoni_Moda'] text-xl text-customer-text mb-3">Cek Status Booking</h2>
+        <p class="text-sm text-customer-text-muted mb-6">Masukkan ID Booking Anda untuk melihat status.</p>
+        <%= form_with url: bookings_path, method: :get, local: true do %>
+          <div class="relative">
+            <%= text_field_tag :booking_id, params[:booking_id], placeholder: "Contoh: BK-0012", class: "w-full bg-customer-surface-container border-b-2 border-customer-tertiary/30 focus:border-customer-primary py-3 px-4 outline-none" %>
+            <%= submit_tag "Cari", class: "absolute right-2 top-1/2 -translate-y-1/2 bg-customer-primary text-white px-4 py-1.5 rounded-full text-sm cursor-pointer" %>
           </div>
+        <% end %>
 
-          <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-            <!-- Status Badge -->
-            <% status_classes = case booking.status
-               when 'pending' then 'bg-amber-50 text-amber-700 border border-amber-200'
-               when 'confirmed' then 'bg-blue-50 text-blue-700 border border-blue-200'
-               when 'completed' then 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-               when 'cancelled' then 'bg-red-50 text-red-700 border border-red-200'
-               else 'bg-customer-surface-high text-customer-text-muted border border-customer-outline-variant'
-               end %>
-            <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase <%= status_classes %>">
-              <%= booking.status %>
-            </span>
+        <% if params[:booking_id].present? %>
+          <div class="mt-6 pt-6 border-t border-customer-outline-variant/20">
+            <% if @searched_booking %>
+              <p class="text-xs text-customer-text-muted uppercase mb-1">Booking BK-<%= @searched_booking.id.to_s.rjust(4, '0') %></p>
+              <p class="font-semibold text-customer-text"><%= @searched_booking.service.name %></p>
+              <p class="text-sm text-customer-text-muted"><%= @searched_booking.booking_date.strftime("%d %b %Y") %>, <%= @searched_booking.booking_time.strftime("%H:%M") %></p>
+              <span class="inline-block mt-2 bg-customer-primary-container/30 text-customer-primary px-3 py-1 rounded-full text-xs capitalize"><%= @searched_booking.status %></span>
+            <% else %>
+              <p class="text-sm text-red-600">ID Booking tidak ditemukan.</p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
 
-            <%= link_to "Details", customer_booking_path(booking), class: "text-xs font-semibold uppercase tracking-wider text-customer-primary hover:text-customer-tertiary transition-colors" %>
+      <!-- Current Servicing -->
+      <div class="bg-customer-primary text-white p-8 rounded-xl flex flex-col items-center justify-center text-center shadow-lg">
+        <span class="text-xs uppercase tracking-widest opacity-80 mb-2">Sedang Dilayani</span>
+        <div class="text-6xl font-['Bodoni_Moda'] mb-2">
+          <%= @current_booking ? "BK-#{@current_booking.id.to_s.rjust(4, '0')}" : "-" %>
+        </div>
+        <p class="text-sm opacity-90"><%= @current_booking&.service&.name || "Belum ada yang dilayani" %></p>
+      </div>
+    </div>
+
+    <!-- Queue Table -->
+    <div class="col-span-12 lg:col-span-8">
+      <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-xl shadow-sm overflow-hidden h-full">
+        <div class="p-6 border-b border-customer-outline-variant/20 flex justify-between items-center">
+          <h2 class="font-['Bodoni_Moda'] text-xl text-customer-text">Daftar Antrian Hari Ini</h2>
+          <div class="flex items-center gap-2 text-customer-primary text-sm">
+            <span class="w-2 h-2 rounded-full bg-customer-primary animate-pulse"></span> Live Update
           </div>
         </div>
-      <% end %>
-    <% else %>
-      <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-[16px] p-12 text-center text-customer-text-muted space-y-4">
-        <p>You do not have any appointments scheduled yet.</p>
-        <%= link_to "Schedule Your First Appointment", new_customer_booking_path, class: "inline-block px-6 py-2.5 rounded-full bg-customer-tertiary text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all" %>
+
+        <% if @today_bookings.empty? %>
+          <p class="p-8 text-center text-customer-text-muted">Belum ada booking untuk hari ini.</p>
+        <% else %>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="bg-customer-surface-container/50">
+                  <th class="px-6 py-3 text-xs text-customer-text-muted uppercase">ID</th>
+                  <th class="px-6 py-3 text-xs text-customer-text-muted uppercase">Nama</th>
+                  <th class="px-6 py-3 text-xs text-customer-text-muted uppercase">Layanan</th>
+                  <th class="px-6 py-3 text-xs text-customer-text-muted uppercase">Waktu</th>
+                  <th class="px-6 py-3 text-xs text-customer-text-muted uppercase">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-customer-outline-variant/10">
+                <% @today_bookings.each do |booking| %>
+                  <% initial = booking.customer.name.to_s.split.map(&:first).join.upcase[0..1] %>
+                  <tr class="<%= booking.status == 'confirmed' ? 'bg-customer-primary-container/10' : '' %> hover:bg-customer-surface-container/30 transition-colors">
+                    <td class="px-6 py-4 font-semibold text-customer-primary">BK-<%= booking.id.to_s.rjust(4, '0') %></td>
+                    <td class="px-6 py-4 text-customer-text"><%= booking.customer.name.split.first %> <%= initial %>.</td>
+                    <td class="px-6 py-4 text-sm text-customer-text"><%= booking.service.name %></td>
+                    <td class="px-6 py-4 text-sm text-customer-text"><%= booking.booking_time.strftime("%H:%M") %></td>
+                    <td class="px-6 py-4">
+                      <% status_color = { "pending" => "bg-customer-tertiary/10 text-customer-tertiary", "confirmed" => "bg-customer-primary/10 text-customer-primary", "completed" => "bg-green-100 text-green-700" }[booking.status] || "bg-gray-100 text-gray-600" %>
+                      <span class="<%= status_color %> px-3 py-1 rounded-full text-xs capitalize"><%= booking.status %></span>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
       </div>
-    <% end %>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="col-span-12 md:col-span-6">
+      <div class="bg-customer-lowest border border-customer-outline-variant/30 rounded-xl p-8 h-full flex flex-col items-center justify-center text-center">
+        <h3 class="font-semibold text-customer-text mb-2">Dalam Antrian</h3>
+        <div class="text-3xl font-['Bodoni_Moda'] text-customer-primary"><%= @waiting_bookings.count.to_s.rjust(2, '0') %> Orang</div>
+        <p class="text-xs text-customer-text-muted mt-2">Menunggu giliran layanan</p>
+      </div>
+    </div>
+    <div class="col-span-12 md:col-span-6">
+      <div class="bg-customer-surface-container-highest rounded-xl p-8 h-full flex flex-col justify-center text-center">
+        <h3 class="font-semibold text-customer-text mb-2">Butuh Bantuan?</h3>
+        <p class="text-sm text-customer-text-muted mb-4">Hubungi kami langsung untuk info lebih lanjut.</p>
+        <%= link_to new_booking_path, class: "inline-block bg-customer-primary text-white px-6 py-2 rounded-full text-sm" do %>
+          Buat Booking Baru
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
