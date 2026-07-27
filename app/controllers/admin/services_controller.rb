@@ -2,7 +2,7 @@ class Admin::ServicesController < Admin::BaseController
   before_action :set_service, only: [:show, :edit, :update, :destroy]
 
   def index
-    @services = Service.includes(:service_category).all
+    @services = Service.includes(:service_category, :photo_attachment).order(created_at: :desc)
   end
 
   def show
@@ -16,7 +16,7 @@ class Admin::ServicesController < Admin::BaseController
   def create
     @service = Service.new(service_params)
     if @service.save
-      redirect_to admin_services_path, notice: "Service '#{@service.name}' was successfully created."
+      redirect_to admin_services_path, notice: "Katalog berhasil ditambahkan."
     else
       @categories = ServiceCategory.all
       render :new, status: :unprocessable_entity
@@ -29,7 +29,7 @@ class Admin::ServicesController < Admin::BaseController
 
   def update
     if @service.update(service_params)
-      redirect_to admin_services_path, notice: "Service '#{@service.name}' was successfully updated."
+      redirect_to admin_services_path, notice: "Katalog berhasil diperbarui."
     else
       @categories = ServiceCategory.all
       render :edit, status: :unprocessable_entity
@@ -38,7 +38,7 @@ class Admin::ServicesController < Admin::BaseController
 
   def destroy
     @service.destroy
-    redirect_to admin_services_path, notice: "Service was successfully deleted."
+    redirect_to admin_services_path, notice: "Katalog berhasil dihapus."
   end
 
   private
@@ -48,6 +48,6 @@ class Admin::ServicesController < Admin::BaseController
   end
 
   def service_params
-    params.require(:service).permit(:name, :description, :price, :is_active, :image_url, :service_category_id)
+    params.require(:service).permit(:name, :description, :price, :service_category_id, :is_active, :duration_minutes, :photo)
   end
 end

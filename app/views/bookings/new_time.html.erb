@@ -92,11 +92,13 @@
         </div>
         <div class="p-6 space-y-4">
           <div class="flex items-start gap-3">
-            <div class="w-16 h-16 rounded-xl overflow-hidden bg-customer-surface-container flex-shrink-0">
-              <% if @service.image_url.present? %>
-                <%= image_tag @service.image_url, class: "w-full h-full object-cover" %>
-              <% end %>
-            </div>
+              <div class="w-16 h-16 rounded-xl overflow-hidden bg-customer-surface-container flex-shrink-0">
+                <% if @service.photo.attached? %>
+                  <%= image_tag @service.photo, class: "w-full h-full object-cover" %>
+                <% elsif @service.image_url.present? %>
+                  <%= image_tag @service.image_url, class: "w-full h-full object-cover" %>
+                <% end %>
+              </div>
             <div>
               <p class="font-semibold text-customer-text"><%= @service.name %></p>
               <p class="text-customer-primary text-sm"><%= number_to_currency(@service.price, unit: "Rp ", precision: 0, delimiter: ".") %></p>

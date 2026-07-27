@@ -1,103 +1,125 @@
-<div class="space-y-8">
+<div class="max-w-6xl mx-auto space-y-8">
   <!-- Header -->
-  <div>
-    <h1 class="text-3xl font-semibold tracking-tight text-white">Financial Transactions</h1>
-    <p class="text-sm text-admin-text-muted mt-1">Review revenue streams, payments, and overall profit metrics.</p>
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <h2 class="text-2xl font-['Libre_Caslon_Text'] text-admin-primary">Laporan Keuangan</h2>
+    <div class="flex gap-3">
+      <%= form_with url: admin_transactions_path, method: :get, local: true, class: "flex items-center gap-2" do %>
+        <%= date_field_tag :start_date, @start_date, class: "bg-white border border-admin-outline-variant/30 rounded-full px-4 py-2 text-sm" %>
+        <span class="text-admin-outline">—</span>
+        <%= date_field_tag :end_date, @end_date, class: "bg-white border border-admin-outline-variant/30 rounded-full px-4 py-2 text-sm" %>
+        <%= submit_tag "Filter", class: "bg-admin-surface-container-low px-4 py-2 rounded-full text-sm font-bold cursor-pointer" %>
+      <% end %>
+      <%= link_to new_admin_transaction_path, class: "flex items-center gap-2 bg-admin-primary text-white px-6 py-2.5 rounded-xl hover:opacity-90 transition-all text-sm font-bold" do %>
+        + Tambah Transaksi
+      <% end %>
+    </div>
   </div>
 
-  <!-- Financial Metrics Grid -->
+  <!-- Summary Cards -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- Total Income -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
-      <span class="text-xs font-semibold tracking-wider text-emerald-400 uppercase flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        Total Income
-      </span>
-      <span class="text-3xl font-bold text-white tracking-tight mt-2">
-        <%= number_to_currency(@total_income, unit: "Rp ", precision: 0, delimiter: ".") %>
-      </span>
+    <div class="bg-white p-6 rounded-3xl shadow-sm">
+      <p class="text-xs text-admin-outline uppercase tracking-wider mb-2">Total Pendapatan</p>
+      <h3 class="text-2xl font-['Libre_Caslon_Text'] text-admin-primary"><%= number_to_currency(@total_income, unit: "Rp ", precision: 0, delimiter: ".") %></h3>
+    </div>
+    <div class="bg-white p-6 rounded-3xl shadow-sm">
+      <p class="text-xs text-admin-outline uppercase tracking-wider mb-2">Total Pengeluaran</p>
+      <h3 class="text-2xl font-['Libre_Caslon_Text'] text-admin-text"><%= number_to_currency(@total_expense, unit: "Rp ", precision: 0, delimiter: ".") %></h3>
+    </div>
+    <div class="bg-white p-6 rounded-3xl shadow-sm">
+      <p class="text-xs text-admin-outline uppercase tracking-wider mb-2">Laba Bersih</p>
+      <h3 class="text-2xl font-['Libre_Caslon_Text'] <%= @net_profit >= 0 ? 'text-green-600' : 'text-red-600' %>"><%= number_to_currency(@net_profit, unit: "Rp ", precision: 0, delimiter: ".") %></h3>
+    </div>
+  </div>
+
+  <!-- Chart + Top Services -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm">
+      <h4 class="text-lg font-['Libre_Caslon_Text'] text-admin-primary mb-1">Pertumbuhan Pendapatan</h4>
+      <p class="text-sm text-admin-outline mb-8">6 bulan terakhir</p>
+
+      <div class="h-56 flex items-end justify-between gap-4 px-2">
+        <% @monthly_data.each do |month| %>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full flex items-end" style="height: 180px;">
+              <div class="w-full bg-admin-primary rounded-t-lg transition-all" style="height: <%= (month[:amount].to_f / @max_monthly * 100).round %>%;"></div>
+            </div>
+            <span class="text-xs text-admin-outline"><%= month[:label] %></span>
+          </div>
+        <% end %>
+      </div>
     </div>
 
-    <!-- Total Expenses (placeholder or actual) -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
-      <span class="text-xs font-semibold tracking-wider text-rose-400 uppercase flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-        Total Expenses
-      </span>
-      <span class="text-3xl font-bold text-white tracking-tight mt-2">
-        <%= number_to_currency(@total_expense, unit: "Rp ", precision: 0, delimiter: ".") %>
-      </span>
-    </div>
+    <div class="space-y-6">
+      <div class="bg-white p-6 rounded-3xl shadow-sm">
+        <p class="text-xs text-admin-outline uppercase tracking-wider mb-2">Total Reservasi</p>
+        <h3 class="text-2xl font-['Libre_Caslon_Text'] text-admin-text"><%= @total_bookings %></h3>
+      </div>
 
-    <!-- Net Profit -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
-      <span class="text-xs font-semibold tracking-wider text-admin-primary uppercase flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-admin-primary"></span>
-        Net Profit
-      </span>
-      <span class="text-3xl font-bold text-white tracking-tight mt-2">
-        <%= number_to_currency(@net_profit, unit: "Rp ", precision: 0, delimiter: ".") %>
-      </span>
+      <div class="bg-admin-primary text-white p-6 rounded-3xl shadow-sm">
+        <h4 class="text-xs uppercase tracking-wider mb-4 opacity-80">Layanan Terlaris</h4>
+        <% if @top_services_with_pct.any? %>
+          <div class="space-y-3">
+            <% @top_services_with_pct.each do |s| %>
+              <div class="flex items-center justify-between">
+                <span class="text-sm"><%= s[:name] %></span>
+                <span class="text-sm font-bold"><%= s[:pct] %>%</span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm opacity-80">Belum ada data.</p>
+        <% end %>
+      </div>
     </div>
   </div>
 
   <!-- Transactions Table -->
-  <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl overflow-hidden">
-    <div class="p-6 border-b border-admin-outline-variant/30">
-      <h2 class="text-lg font-semibold text-white">Transaction Logs</h2>
+  <div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+    <div class="px-8 py-6 border-b border-admin-outline-variant/20">
+      <h4 class="text-lg font-['Libre_Caslon_Text'] text-admin-primary">Transaksi Terakhir</h4>
     </div>
 
-    <% if @transactions.any? %>
+    <% if @recent_transactions.empty? %>
+      <p class="p-8 text-center text-admin-text-muted">Belum ada transaksi.</p>
+    <% else %>
       <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm whitespace-nowrap">
-          <thead>
-            <tr class="bg-admin-low border-b border-admin-outline-variant/50 text-admin-tertiary">
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Date</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Description</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Type</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Category</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase text-right">Amount</th>
+        <table class="w-full text-left">
+          <thead class="bg-admin-surface-container-low">
+            <tr>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider">Tanggal</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider">Keterangan</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider">Kategori</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider text-right">Jumlah</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider text-center">Jenis</th>
+              <th class="px-6 py-4"></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-admin-outline-variant/30">
-            <% @transactions.each do |tx| %>
-              <tr class="hover:bg-admin-low/40 transition-colors">
-                <td class="px-6 py-4 font-medium text-admin-primary">
-                  <%= tx.transaction_date.strftime("%b %d, %Y") %>
-                </td>
-                <td class="px-6 py-4">
-                  <div class="font-semibold text-white"><%= tx.description %></div>
-                  <% if tx.booking %>
-                    <div class="text-xs text-admin-text-muted mt-0.5">
-                      Linked to booking for <%= tx.booking.customer.name %> on <%= tx.booking.booking_date.strftime("%b %d") %>
-                    </div>
+          <tbody class="divide-y divide-admin-outline-variant/10">
+            <% @recent_transactions.each do |t| %>
+              <tr class="hover:bg-admin-primary-fixed/5 transition-colors">
+                <td class="px-6 py-5 text-sm text-admin-text"><%= t.transaction_date.strftime("%d %b %Y") %></td>
+                <td class="px-6 py-5 text-sm text-admin-text">
+                  <%= t.description.presence || t.booking&.service&.name || "-" %>
+                  <% if t.booking %>
+                    <p class="text-xs text-admin-outline"><%= t.booking.customer.name %></p>
                   <% end %>
                 </td>
-                <td class="px-6 py-4 text-xs font-medium text-admin-text-muted capitalize">
-                  <%= tx.transaction_type %>
+                <td class="px-6 py-5 text-sm text-admin-text-muted"><%= t.category %></td>
+                <td class="px-6 py-5 text-sm font-bold text-right <%= t.transaction_type == 'income' ? 'text-green-600' : 'text-red-600' %>">
+                  <%= t.transaction_type == 'income' ? '+' : '-' %><%= number_to_currency(t.amount, unit: "Rp ", precision: 0, delimiter: ".") %>
                 </td>
-                <td class="px-6 py-4">
-                  <% if tx.category == 'income' %>
-                    <span class="px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/30 text-xs font-medium uppercase tracking-wider">
-                      Income
-                    </span>
-                  <% else %>
-                    <span class="px-2 py-0.5 rounded bg-rose-950/40 text-rose-400 border border-rose-800/30 text-xs font-medium uppercase tracking-wider">
-                      Expense
-                    </span>
-                  <% end %>
+                <td class="px-6 py-5 text-center">
+                  <span class="px-3 py-1 rounded-full text-xs font-bold <%= t.transaction_type == 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+                    <%= t.transaction_type == 'income' ? 'Masuk' : 'Keluar' %>
+                  </span>
                 </td>
-                <td class="px-6 py-4 text-right font-bold <%= tx.category == 'income' ? 'text-emerald-400' : 'text-rose-400' %>">
-                  <%= tx.category == 'income' ? '+' : '-' %> <%= number_to_currency(tx.amount, unit: "Rp ", precision: 0, delimiter: ".") %>
+                <td class="px-6 py-5 text-right">
+                  <%= button_to "Hapus", admin_transaction_path(t), method: :delete, class: "text-red-600 hover:underline text-sm bg-transparent border-0 cursor-pointer", data: { confirm: "Yakin hapus transaksi ini?" } %>
                 </td>
               </tr>
             <% end %>
           </tbody>
         </table>
-      </div>
-    <% else %>
-      <div class="p-12 text-center text-admin-text-muted">
-        No transactions recorded yet.
       </div>
     <% end %>
   </div>

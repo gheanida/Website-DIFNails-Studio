@@ -3,7 +3,9 @@
 
   <div class="bg-white/60 border border-customer-outline-variant/20 rounded-2xl overflow-hidden shadow-sm">
     <div class="h-64 sm:h-80 bg-customer-surface-container">
-      <% if @service.image_url.present? %>
+      <% if @service.photo.attached? %>
+        <%= image_tag @service.photo, class: "w-full h-full object-cover" %>
+      <% elsif @service.image_url.present? %>
         <%= image_tag @service.image_url, class: "w-full h-full object-cover" %>
       <% end %>
     </div>

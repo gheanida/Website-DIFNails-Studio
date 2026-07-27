@@ -1,67 +1,62 @@
-<div class="space-y-8">
-  <!-- Header -->
-  <div>
-    <h1 class="text-3xl font-semibold tracking-tight text-white">Client Directory</h1>
-    <p class="text-sm text-admin-text-muted mt-1">Review the customer profiles, contacts, and booking activities.</p>
+<div class="max-w-6xl mx-auto space-y-8">
+  <div class="flex flex-col md:flex-row justify-between items-end gap-6">
+    <div>
+      <h2 class="text-2xl font-['Libre_Caslon_Text'] text-admin-primary">Manajemen Pelanggan</h2>
+      <p class="text-admin-text-muted mt-1">Kelola data dan riwayat pelanggan DIFNails.</p>
+    </div>
+    <%= form_with url: admin_customers_path, method: :get, local: true do %>
+      <input type="text" name="q" value="<%= params[:q] %>" placeholder="Cari nama atau nomor HP..." class="w-72 bg-white border border-admin-outline-variant/30 rounded-full py-2.5 px-5 text-sm focus:ring-2 focus:ring-admin-primary/20">
+    <% end %>
   </div>
 
-  <!-- Customers Table Card -->
-  <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl overflow-hidden">
-    <% if @customers.any? %>
+  <div class="bg-white rounded-2xl shadow-sm border border-admin-outline-variant/20 overflow-hidden">
+    <% if @customers.empty? %>
+      <p class="p-12 text-center text-admin-text-muted">Belum ada pelanggan terdaftar.</p>
+    <% else %>
       <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm whitespace-nowrap">
+        <table class="w-full text-left">
           <thead>
-            <tr class="bg-admin-low border-b border-admin-outline-variant/50 text-admin-tertiary">
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Name</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Email</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Phone Number</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase">Status</th>
-              <th class="px-6 py-3 font-semibold text-xs tracking-wider uppercase text-right">Activity</th>
+            <tr class="bg-admin-surface-container-low/50 border-b border-admin-outline-variant/20">
+              <th class="px-8 py-5 text-xs font-bold text-admin-outline uppercase tracking-wider">Nama</th>
+              <th class="px-6 py-5 text-xs font-bold text-admin-outline uppercase tracking-wider">Kontak</th>
+              <th class="px-6 py-5 text-xs font-bold text-admin-outline uppercase tracking-wider">Total Booking</th>
+              <th class="px-6 py-5 text-xs font-bold text-admin-outline uppercase tracking-wider">Layanan Favorit</th>
+              <th class="px-6 py-5 text-xs font-bold text-admin-outline uppercase tracking-wider">Total Pengeluaran</th>
+              <th class="px-6 py-5 text-xs font-bold text-admin-outline uppercase tracking-wider text-right">Booking Terakhir</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-admin-outline-variant/30">
+          <tbody class="divide-y divide-admin-outline-variant/10">
             <% @customers.each do |customer| %>
-              <tr class="hover:bg-admin-low/40 transition-colors">
-                <!-- Name -->
-                <td class="px-6 py-4 font-semibold text-white">
-                  <%= customer.name %>
+              <% last_booking = customer.bookings.order(booking_date: :desc, booking_time: :desc).first %>
+              <tr class="hover:-translate-y-0.5 hover:shadow-md transition-all cursor-pointer" onclick="window.location='<%= admin_customer_path(customer) %>'">
+                <td class="px-8 py-6">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-admin-primary-fixed text-admin-primary flex items-center justify-center font-bold">
+                      <%= customer_initials(customer.name) %>
+                    </div>
+                    <span class="font-bold text-admin-primary"><%= customer.name %></span>
+                  </div>
                 </td>
-
-                <!-- Email -->
-                <td class="px-6 py-4 text-admin-text">
-                  <%= customer.email %>
+                <td class="px-6 py-6 text-sm text-admin-outline"><%= customer.phone %></td>
+                <td class="px-6 py-6">
+                  <span class="bg-admin-primary-fixed/30 text-admin-primary px-3 py-1 rounded-full text-sm font-bold"><%= customer.bookings.count %> Kali</span>
                 </td>
-
-                <!-- Phone -->
-                <td class="px-6 py-4 text-admin-text-muted">
-                  <%= customer.phone.present? ? customer.phone : "-" %>
+                <td class="px-6 py-6">
+                  <span class="text-sm text-admin-text-muted border border-admin-outline-variant rounded-md px-2 py-0.5"><%= favorite_service_for(customer) %></span>
                 </td>
-
-                <!-- Status -->
-                <td class="px-6 py-4">
-                  <% if customer.status == 'Active' %>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider bg-emerald-950/40 text-emerald-400 border border-emerald-800/35">
-                      ACTIVE
-                    </span>
+                <td class="px-6 py-6 font-bold text-admin-text"><%= number_to_currency(customer_total_spent(customer), unit: "Rp ", precision: 0, delimiter: ".") %></td>
+                <td class="px-6 py-6 text-right">
+                  <% if last_booking %>
+                    <p class="text-sm text-admin-text"><%= last_booking.booking_date.strftime("%d %b %Y") %></p>
+                    <p class="text-xs text-admin-outline"><%= last_booking.booking_time.strftime("%H:%M") %> WIB</p>
                   <% else %>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider bg-admin-surface-highest text-admin-text-muted border border-admin-outline">
-                      INACTIVE
-                    </span>
+                    <p class="text-sm text-admin-outline">-</p>
                   <% end %>
-                </td>
-
-                <!-- Actions -->
-                <td class="px-6 py-4 text-right">
-                  <%= link_to "View History &rarr;".html_safe, admin_customer_path(customer), class: "text-xs font-medium text-admin-primary hover:text-white transition-colors" %>
                 </td>
               </tr>
             <% end %>
           </tbody>
         </table>
-      </div>
-    <% else %>
-      <div class="p-12 text-center text-admin-text-muted">
-        No clients found in the database.
       </div>
     <% end %>
   </div>

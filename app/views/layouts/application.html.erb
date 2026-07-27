@@ -11,6 +11,16 @@
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <script>
+      window.onUsersnapLoad = function(api) {
+        api.init();
+      };
+      var script = document.createElement('script');
+      script.defer = 1;
+      script.src = 'https://widget.usersnap.com/global/load/5b1c698c-906b-4bc6-a0c0-31289207e68e?onload=onUsersnapLoad';
+      document.getElementsByTagName('head')[0].appendChild(script);
+    </script>
   </head>
   <body class="bg-customer-bg text-customer-text font-['Plus_Jakarta_Sans']">
 

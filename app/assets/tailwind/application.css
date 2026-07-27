@@ -1,24 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  /* Admin Theme: Quiet Luxury Portal */
-  --color-admin-bg: #fff8f5;
-  --color-admin-surface: #fbf2ed;
-  --color-admin-surface-high: #efe6e2;
-  --color-admin-surface-container: #f5ece7;
-  --color-admin-primary: #75566f;
-  --color-admin-primary-container: #e9c1cc;
-  --color-admin-on-primary: #ffffff;
-  --color-admin-on-primary-container: #6c4d57;
-  --color-admin-secondary: #615e58;
-  --color-admin-tertiary: #7d562d;
-  --color-admin-tertiary-container: #f5c18f;
-  --color-admin-outline: #817477;
-  --color-admin-outline-variant: #d2c3c6;
-  --color-admin-text: #1e1b18;
-  --color-admin-text-muted: #4f4447;
+  /* Admin Theme: DIFNails Admin Portal */
+  --color-admin-bg: #fbf9f8;
+  --color-admin-surface: #ffffff;
+  --color-admin-surface-container: #f0eded;
+  --color-admin-surface-container-low: #f6f3f2;
+  --color-admin-primary: #500926;
+  --color-admin-primary-container: #6d213c;
+  --color-admin-primary-fixed: #ffd9e1;
+  --color-admin-primary-fixed-dim: #ffb1c5;
+  --color-admin-secondary: #8b4d46;
+  --color-admin-secondary-container: #fdada3;
+  --color-admin-secondary-fixed: #ffdad5;
+  --color-admin-tertiary: #2f2522;
+  --color-admin-outline: #867276;
+  --color-admin-outline-variant: #d9c1c5;
+  --color-admin-text: #1b1c1c;
+  --color-admin-text-muted: #534246;
   --color-admin-error: #ba1a1a;
   --color-admin-error-container: #ffdad6;
+
 
   /* Customer Theme: Quiet Luxury Portal */
   --color-customer-bg: #fff8f5;

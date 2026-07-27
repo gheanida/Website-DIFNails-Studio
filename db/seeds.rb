@@ -6,6 +6,15 @@ Service.delete_all
 ServiceCategory.delete_all
 AdminUser.delete_all
 
+
+OperatingHour::DAYS.each_with_index do |day, index|
+  OperatingHour.find_or_create_by!(day_of_week: index) do |oh|
+    oh.is_open = index != 6
+    oh.open_time = "09:00"
+    oh.close_time = "20:00"
+  end
+end
+
 # 1. Seed Admin Users
 AdminUser.create!(
   email: "admin@difnails.com",

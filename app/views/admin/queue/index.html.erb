@@ -1,0 +1,148 @@
+<div class="max-w-6xl mx-auto space-y-10">
+  <!-- Stats Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-admin-outline-variant/20 flex items-center justify-between">
+      <div>
+        <p class="text-xs text-admin-outline font-medium mb-1 uppercase tracking-wider">Total Antrian Hari Ini</p>
+        <h3 class="text-3xl font-['Libre_Caslon_Text'] text-admin-text"><%= @total_today %> <span class="text-sm text-admin-outline font-normal">Pelanggan</span></h3>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-admin-secondary-fixed flex items-center justify-center text-xl">👥</div>
+    </div>
+
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-admin-outline-variant/20 flex items-center justify-between">
+      <div>
+        <p class="text-xs text-admin-outline font-medium mb-1 uppercase tracking-wider">Sisa Antrian</p>
+        <h3 class="text-3xl font-['Libre_Caslon_Text'] text-admin-primary"><%= @waiting_bookings.count %> <span class="text-sm text-admin-outline font-normal">Menunggu</span></h3>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-admin-primary-fixed flex items-center justify-center text-xl">⏳</div>
+    </div>
+
+    <div class="bg-admin-primary text-white p-6 rounded-3xl shadow-sm flex items-center justify-between relative overflow-hidden">
+      <div class="relative z-10">
+        <p class="text-xs text-admin-primary-fixed-dim font-medium mb-1 uppercase tracking-wider">Selesai Hari Ini</p>
+        <h3 class="text-3xl font-['Libre_Caslon_Text']"><%= @completed_today %> <span class="text-sm font-normal opacity-70">Pelanggan</span></h3>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl relative z-10">✅</div>
+      <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
+    </div>
+  </div>
+
+  <!-- Hero Queue Section -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-7">
+      <div class="bg-admin-primary-fixed p-10 rounded-[32px] shadow-sm relative overflow-hidden h-full flex flex-col justify-center">
+        <div class="relative z-10">
+          <span class="inline-block px-4 py-1.5 bg-white/50 rounded-full text-xs font-bold text-admin-primary mb-6">LIVE STATUS</span>
+          <h2 class="text-xl font-['Libre_Caslon_Text'] text-admin-primary mb-2">Nomor Antrian Saat Ini</h2>
+          <div class="text-7xl lg:text-8xl font-['Libre_Caslon_Text'] leading-none text-admin-primary font-bold tracking-tighter">
+            <%= @current_booking ? "BK-#{@current_booking.id.to_s.rjust(4, '0')}" : "-" %>
+          </div>
+          <% if @current_booking %>
+            <div class="mt-8 flex gap-4">
+              <%= button_to admin_booking_path(@current_booking), method: :patch, params: { status: "completed" }, class: "bg-admin-primary text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg transition-all" do %>
+                ✓ Proses Selesai
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-admin-primary/70 mt-4">Belum ada pelanggan yang sedang dilayani.</p>
+          <% end %>
+        </div>
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-white/20 rounded-full blur-3xl"></div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-5">
+      <div class="bg-white p-8 rounded-[32px] shadow-sm border border-admin-outline-variant/20 h-full flex flex-col">
+        <h3 class="text-lg font-['Libre_Caslon_Text'] text-admin-text mb-6">Pelanggan Aktif</h3>
+        <% if @current_booking %>
+          <div class="flex-1 flex flex-col justify-center">
+            <div class="flex items-center gap-6 mb-8">
+              <div class="w-16 h-16 rounded-full bg-admin-primary-fixed flex items-center justify-center text-admin-primary font-bold text-xl">
+                <%= customer_initials(@current_booking.customer.name) %>
+              </div>
+              <div>
+                <h4 class="text-lg font-['Libre_Caslon_Text'] text-admin-text"><%= @current_booking.customer.name %></h4>
+                <p class="text-sm text-admin-outline"><%= @current_booking.customer.phone %></p>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center py-3 border-b border-admin-outline-variant">
+                <span class="text-sm text-admin-outline">Layanan</span>
+                <span class="text-sm font-bold text-admin-text"><%= @current_booking.service.name %></span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-sm text-admin-outline">Jam Booking</span>
+                <span class="text-sm font-bold text-admin-primary"><%= @current_booking.booking_time.strftime("%H:%M") %> WIB</span>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <p class="text-sm text-admin-text-muted flex-1 flex items-center">Tidak ada pelanggan aktif saat ini.</p>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming Queue List -->
+  <section class="bg-white rounded-[32px] shadow-sm border border-admin-outline-variant/20 overflow-hidden">
+    <div class="p-8 border-b border-admin-outline-variant/20">
+      <h3 class="text-lg font-['Libre_Caslon_Text'] text-admin-text">Daftar Antrian Selanjutnya</h3>
+      <p class="text-sm text-admin-outline mt-1">Mengelola antrian pelanggan yang akan datang hari ini</p>
+    </div>
+
+    <% if @waiting_bookings.empty? %>
+      <p class="p-8 text-center text-admin-text-muted">Tidak ada antrian menunggu.</p>
+    <% else %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="bg-admin-surface-container-low/50">
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider">No. Antrian</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider">Nama Pelanggan</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider">Layanan</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider">Jam</th>
+              <th class="px-6 py-4 text-xs font-bold text-admin-outline uppercase tracking-wider text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-outline-variant/20">
+            <% @waiting_bookings.each do |booking| %>
+              <tr class="hover:bg-admin-primary-fixed/10 transition-colors">
+                <td class="px-6 py-6">
+                  <span class="px-4 py-2 bg-admin-secondary-fixed text-admin-text font-bold rounded-lg text-sm">
+                    BK-<%= booking.id.to_s.rjust(4, '0') %>
+                  </span>
+                </td>
+                <td class="px-6 py-6">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-admin-surface-container flex items-center justify-center text-xs font-bold text-admin-outline">
+                      <%= customer_initials(booking.customer.name) %>
+                    </div>
+                    <span class="font-bold text-admin-text"><%= booking.customer.name %></span>
+                  </div>
+                </td>
+                <td class="px-6 py-6 text-admin-text-muted"><%= booking.service.name %></td>
+                <td class="px-6 py-6 text-admin-outline"><%= booking.booking_time.strftime("%H:%M") %> WIB</td>
+                <td class="px-6 py-6 text-right">
+                  <div class="flex justify-end gap-2">
+                    <%= button_to admin_booking_path(booking), method: :patch, params: { status: "confirmed" }, class: "px-4 py-2 text-sm font-bold text-admin-primary hover:bg-admin-primary-fixed rounded-lg transition-all" do %>
+                      Process
+                    <% end %>
+                    <%= button_to admin_booking_path(booking), method: :patch, params: { status: "cancelled" }, class: "px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg transition-all", data: { confirm: "Tandai sebagai tidak hadir?" } do %>
+                      No-Show
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+
+    <div class="p-6 bg-admin-surface-container-low flex justify-center">
+      <%= link_to admin_bookings_path, class: "flex items-center gap-2 text-sm font-bold text-admin-primary hover:underline" do %>
+        Lihat Seluruh Daftar Reservasi →
+      <% end %>
+    </div>
+  </section>
+</div>

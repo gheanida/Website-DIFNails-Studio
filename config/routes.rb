@@ -14,7 +14,10 @@ Rails.application.routes.draw do
     resources :services
     resources :transactions
     resources :bookings
+    get 'queue', to: 'queue#index'
     resources :customers, only: [:index, :show]
-    resources :settings, only: [:index, :update]
+    get 'settings', to: 'settings#index', as: :settings
+    patch 'settings/profile', to: 'settings#update_profile', as: :update_profile_settings
+    patch 'settings/hours', to: 'settings#update_hours', as: :update_hours_settings
   end
 end

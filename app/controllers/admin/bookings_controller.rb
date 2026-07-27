@@ -1,42 +1,37 @@
 class Admin::BookingsController < Admin::BaseController
-  before_action :set_booking, only: [:update, :destroy]
+  before_action :set_booking, only: [:show, :update, :destroy]
 
   def index
-    @bookings = Booking.includes(:customer, :service).order(booking_date: :desc, booking_time: :asc)
-    @today_bookings = Booking.includes(:customer, :service).where(booking_date: Date.today).order(:booking_time)
+    @bookings = Booking.includes(:service, :customer).order(booking_date: :desc, booking_time: :asc)
+
+    if params[:status].present?
+      @bookings = @bookings.where(status: params[:status])
+    end
+
+    if params[:q].present?
+      @bookings = @bookings.joins(:customer).where("customers.name LIKE ? OR customers.phone LIKE ?", "%#{params[:q]}%", "%#{params[:q]}%")
+    end
+  end
+
+  def show
   end
 
   def update
-    if @booking.update(booking_params)
-      # If completed, let's auto-generate a transaction if it doesn't exist
-      if @booking.status == 'completed' && !Transaction.exists?(booking_id: @booking.id)
-        Transaction.create!(
-          booking: @booking,
-          amount: @booking.service.price,
-          category: 'income',
-          transaction_type: 'payment',
-          transaction_date: Date.today,
-          description: "Payment for #{@booking.service.name} - #{@booking.customer.name}"
-        )
-      end
-      redirect_to admin_bookings_path, notice: "Booking status updated to #{@booking.status.capitalize}."
+    if @booking.update(status: params[:status])
+      redirect_back fallback_location: admin_bookings_path, notice: "Status booking berhasil diperbarui."
     else
-      redirect_to admin_bookings_path, alert: "Failed to update booking status."
+      redirect_back fallback_location: admin_bookings_path, alert: "Gagal memperbarui status."
     end
   end
 
   def destroy
     @booking.destroy
-    redirect_to admin_bookings_path, notice: "Booking was successfully deleted."
+    redirect_to admin_bookings_path, notice: "Booking berhasil dihapus."
   end
 
   private
 
   def set_booking
     @booking = Booking.find(params[:id])
-  end
-
-  def booking_params
-    params.require(:booking).permit(:status, :booking_date, :booking_time, :notes, :service_id, :customer_id)
   end
 end

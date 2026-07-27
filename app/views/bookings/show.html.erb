@@ -17,35 +17,3 @@
   <p class="mt-8 text-sm text-customer-text-muted italic">*Mohon datang 10 menit sebelum jadwal reservasi dimulai.</p>
 </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <span class="text-xs text-customer-text-muted uppercase">Layanan</span>
-        <p class="font-semibold text-customer-text"><%= @booking.service.name %></p>
-      </div>
-      <div>
-        <span class="text-xs text-customer-text-muted uppercase">Tanggal</span>
-        <p class="font-semibold text-customer-text"><%= @booking.booking_date.strftime("%d %b %Y") %></p>
-      </div>
-      <div>
-        <span class="text-xs text-customer-text-muted uppercase">Waktu</span>
-        <p class="font-semibold text-customer-text"><%= @booking.booking_time.strftime("%H:%M") %> WIB</p>
-      </div>
-      <div>
-        <span class="text-xs text-customer-text-muted uppercase">Atas Nama</span>
-        <p class="font-semibold text-customer-text"><%= @booking.customer.name %></p>
-      </div>
-    </div>
-
-    <div class="mt-8 pt-6 border-t border-dashed border-customer-outline-variant/40 flex justify-between items-center">
-      <span class="font-semibold text-customer-text">Total</span>
-      <span class="text-xl font-bold text-customer-primary"><%= number_to_currency(@booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></span>
-    </div>
-  </div>
-
-  <div class="mt-8 flex flex-col sm:flex-row gap-4">
-    <%= link_to "Cek Booking Saya", bookings_path(phone: @booking.customer.phone), class: "flex-1 bg-customer-primary text-white py-4 rounded-full font-medium hover:opacity-90 transition-all" %>
-    <%= link_to "Kembali ke Beranda", root_path, class: "flex-1 border border-customer-primary text-customer-primary py-4 rounded-full font-medium hover:bg-customer-primary-container/20 transition-all" %>
-  </div>
-
-  <p class="mt-8 text-sm text-customer-text-muted italic">*Mohon datang 10 menit sebelum jadwal reservasi dimulai.</p>
-</div>

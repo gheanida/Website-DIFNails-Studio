@@ -1,115 +1,122 @@
-<div class="space-y-8">
-  <!-- Page Title -->
-  <div>
-    <h1 class="text-3xl font-semibold tracking-tight text-white">Dashboard Overview</h1>
-    <p class="text-sm text-admin-text-muted mt-1">Real-time salon performance and operational queue.</p>
-  </div>
+<div class="max-w-[1400px] mx-auto space-y-8">
+  <h2 class="text-2xl font-['Libre_Caslon_Text'] font-bold text-admin-text mb-2">Overview</h2>
 
-  <!-- Stats Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-    <!-- Revenue -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
-      <span class="text-xs font-semibold tracking-wider text-admin-tertiary uppercase">Total Revenue</span>
-      <span class="text-3xl font-bold text-white tracking-tight mt-2">
-        <%= number_to_currency(@total_revenue, unit: "Rp ", precision: 0, delimiter: ".") %>
-      </span>
+  <!-- Bento Stat Cards -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-admin-outline-variant/20">
+      <div class="p-2 bg-admin-primary-fixed rounded-xl text-admin-primary w-fit mb-4">📅</div>
+      <p class="text-sm text-admin-outline mb-1">Total Reservasi Hari Ini</p>
+      <h3 class="text-3xl font-['Libre_Caslon_Text'] text-admin-text"><%= @today_reservations_count %></h3>
     </div>
 
-    <!-- Active Queue -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
-      <span class="text-xs font-semibold tracking-wider text-admin-tertiary uppercase">Today's Queue</span>
-      <span class="text-3xl font-bold text-white tracking-tight mt-2"><%= @active_queue_count %></span>
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-admin-outline-variant/20">
+      <div class="p-2 bg-admin-secondary-container rounded-xl text-admin-secondary w-fit mb-4">📋</div>
+      <p class="text-sm text-admin-outline mb-1">Antrian Menunggu</p>
+      <h3 class="text-3xl font-['Libre_Caslon_Text'] text-admin-text"><%= @active_queue_count.to_s.rjust(2, '0') %></h3>
     </div>
 
-    <!-- Services Count -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
-      <span class="text-xs font-semibold tracking-wider text-admin-tertiary uppercase">Active Services</span>
-      <span class="text-3xl font-bold text-white tracking-tight mt-2"><%= @total_services_count %></span>
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-admin-outline-variant/20">
+      <div class="p-2 bg-admin-tertiary-fixed rounded-xl text-admin-tertiary w-fit mb-4">💰</div>
+      <p class="text-sm text-admin-outline mb-1">Pendapatan Bulan Ini</p>
+      <h3 class="text-2xl font-['Libre_Caslon_Text'] text-admin-text"><%= number_to_currency(@month_revenue, unit: "Rp ", precision: 0, delimiter: ".") %></h3>
     </div>
 
-    <!-- Customers Count -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 flex flex-col justify-between h-32">
-      <span class="text-xs font-semibold tracking-wider text-admin-tertiary uppercase">Active Clients</span>
-      <span class="text-3xl font-bold text-white tracking-tight mt-2"><%= @active_customers_count %></span>
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-admin-outline-variant/20">
+      <div class="p-2 bg-admin-primary-fixed-dim/40 rounded-xl text-admin-primary w-fit mb-4">✨</div>
+      <p class="text-sm text-admin-outline mb-1">Layanan Terpopuler</p>
+      <h3 class="text-xl font-['Libre_Caslon_Text'] text-admin-text"><%= @popular_service %></h3>
     </div>
-  </div>
+  </section>
 
-  <!-- Dashboard Tables Layout -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Today's Appointments (Left 2 Columns) -->
-    <div class="lg:col-span-2 bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 space-y-6">
-      <div class="flex justify-between items-center">
-        <h2 class="text-lg font-semibold text-white">Today's Appointments</h2>
-        <span class="text-xs text-admin-primary bg-admin-primary-container/20 px-3 py-1 rounded-full font-medium">
-          <%= Date.today.strftime("%B %d, %Y") %>
-        </span>
+  <!-- Weekly Trend + Quick Action -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Weekly Chart -->
+    <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-admin-outline-variant/20">
+      <div class="mb-8">
+        <h4 class="text-lg font-['Libre_Caslon_Text'] text-admin-text">Tren Booking Mingguan</h4>
+        <p class="text-sm text-admin-outline">Data pemesanan 7 hari ini</p>
       </div>
 
-      <% if @today_appointments.any? %>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead>
-              <tr class="border-b border-admin-outline-variant/50 text-admin-tertiary">
-                <th class="py-3 font-semibold text-xs tracking-wider uppercase">Time</th>
-                <th class="py-3 font-semibold text-xs tracking-wider uppercase">Customer</th>
-                <th class="py-3 font-semibold text-xs tracking-wider uppercase">Service</th>
-                <th class="py-3 font-semibold text-xs tracking-wider uppercase">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-admin-outline-variant/30">
-              <% @today_appointments.each do |booking| %>
-                <tr class="hover:bg-admin-low/40 transition-colors">
-                  <td class="py-4 font-medium text-admin-primary"><%= booking.booking_time.strftime("%H:%M") %></td>
-                  <td class="py-4 font-semibold text-white">
-                    <%= booking.customer.name %>
-                    <span class="block text-xs text-admin-text-muted font-normal"><%= booking.customer.phone %></span>
-                  </td>
-                  <td class="py-4 text-admin-text">
-                    <%= booking.service.name %>
-                    <span class="block text-xs text-admin-tertiary font-normal"><%= number_to_currency(booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></span>
-                  </td>
-                  <td class="py-4">
-                    <% status_classes = case booking.status
-                       when 'pending' then 'bg-amber-950/40 text-amber-400 border border-amber-800/35'
-                       when 'confirmed' then 'bg-blue-950/40 text-blue-400 border border-blue-800/35'
-                       when 'completed' then 'bg-emerald-950/40 text-emerald-400 border border-emerald-800/35'
-                       else 'bg-admin-surface-highest text-admin-text-muted border border-admin-outline'
-                       end %>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider <%= status_classes %>">
-                      <%= booking.status.upcase %>
-                    </span>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <p class="text-sm text-admin-text-muted py-6">No appointments scheduled for today.</p>
-      <% end %>
-    </div>
-
-    <!-- Recent Activity / Bookings (Right 1 Column) -->
-    <div class="bg-admin-surface border border-admin-outline-variant/30 rounded-xl p-6 space-y-6">
-      <h2 class="text-lg font-semibold text-white">Recent Bookings</h2>
-      <div class="space-y-4">
-        <% if @recent_bookings.any? %>
-          <% @recent_bookings.each do |booking| %>
-            <div class="flex justify-between items-start pb-4 border-b border-admin-outline-variant/30 last:border-0 last:pb-0">
-              <div class="space-y-1">
-                <span class="text-sm font-semibold text-white"><%= booking.customer.name %></span>
-                <p class="text-xs text-admin-text-muted">Booked <%= booking.service.name %></p>
-                <div class="text-[10px] text-admin-tertiary font-medium">
-                  <%= booking.booking_date.strftime("%b %d") %> @ <%= booking.booking_time.strftime("%H:%M") %>
-                </div>
-              </div>
-              <span class="text-xs text-admin-primary"><%= time_ago_in_words(booking.created_at) %> ago</span>
+      <div class="h-56 flex items-end justify-between gap-3 px-2">
+        <% @weekly_data.each do |day| %>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full bg-admin-primary/10 rounded-t-lg relative flex items-end" style="height: 180px;">
+              <div class="w-full bg-admin-primary rounded-t-lg transition-all" style="height: <%= (day[:count].to_f / @max_weekly_count * 100).round %>%;"></div>
             </div>
-          <% end %>
-        <% else %>
-          <p class="text-sm text-admin-text-muted py-4">No recent bookings recorded.</p>
+            <span class="text-xs text-admin-outline"><%= day[:label] %></span>
+          </div>
         <% end %>
       </div>
     </div>
-  </div>
+
+    <!-- Quick Action Card -->
+    <div class="bg-admin-primary rounded-3xl shadow-sm overflow-hidden relative p-8 flex flex-col justify-end min-h-[280px]">
+      <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+      <div class="relative z-10 text-white">
+        <span class="text-xs uppercase tracking-widest opacity-80 mb-2 block">Aksi Cepat</span>
+        <h5 class="text-xl font-['Libre_Caslon_Text'] mb-4">Kelola Katalog & Promo</h5>
+        <%= link_to admin_services_path, class: "block w-full bg-white text-admin-primary font-bold py-3 rounded-xl hover:bg-admin-primary-fixed transition-colors text-center" do %>
+          Buka Katalog
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Reservations -->
+  <section class="bg-white rounded-3xl shadow-sm border border-admin-outline-variant/20 overflow-hidden">
+    <div class="px-8 py-6 border-b border-admin-outline-variant/20 flex justify-between items-center">
+      <h4 class="text-lg font-['Libre_Caslon_Text'] text-admin-text">Reservasi Terbaru</h4>
+    </div>
+
+    <% if @recent_reservations.empty? %>
+      <p class="p-8 text-center text-admin-text-muted">Belum ada reservasi.</p>
+    <% else %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="bg-admin-surface-container-low/30 text-admin-outline text-xs uppercase tracking-wider">
+              <th class="px-6 py-4 font-semibold">Customer</th>
+              <th class="px-6 py-4 font-semibold">Layanan</th>
+              <th class="px-6 py-4 font-semibold">Tanggal</th>
+              <th class="px-6 py-4 font-semibold">Waktu</th>
+              <th class="px-6 py-4 font-semibold">Status</th>
+              <th class="px-6 py-4"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-admin-outline-variant/10">
+            <% @recent_reservations.each do |booking| %>
+              <tr class="hover:bg-admin-surface-container-low/50 transition-colors">
+                <td class="px-6 py-5">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-admin-primary-fixed-dim flex items-center justify-center text-admin-primary font-bold text-sm">
+                      <%= customer_initials(booking.customer.name) %>
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium text-admin-text"><%= booking.customer.name %></p>
+                      <p class="text-xs text-admin-outline"><%= booking.customer.phone %></p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-5 text-sm text-admin-text-muted"><%= booking.service.name %></td>
+                <td class="px-6 py-5 text-sm text-admin-text-muted"><%= booking.booking_date.strftime("%d %b %Y") %></td>
+                <td class="px-6 py-5 text-sm text-admin-text-muted"><%= booking.booking_time.strftime("%H:%M") %></td>
+                <td class="px-6 py-5">
+                  <span class="px-3 py-1 rounded-full text-xs font-bold <%= status_badge_class(booking.status) %>">
+                    <%= status_label(booking.status) %>
+                  </span>
+                </td>
+                <td class="px-6 py-5 text-right">
+                  <%= link_to "Lihat", admin_booking_path(booking), class: "text-admin-primary hover:underline text-sm font-semibold" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+
+    <div class="p-6 border-t border-admin-outline-variant/20 text-center">
+      <%= link_to "Lihat Semua Data Reservasi", admin_bookings_path, class: "text-admin-primary font-bold text-sm hover:underline" %>
+    </div>
+  </section>
 </div>

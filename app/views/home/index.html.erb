@@ -17,7 +17,7 @@
     </div>
     <div class="md:col-span-6 relative h-[500px] w-full">
       <div class="absolute inset-0 rounded-[40px] overflow-hidden shadow-2xl">
-        <img class="w-full h-full object-cover" alt="Nail art premium DIFNails" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB318NUXKFkEW7CO8ah-e5dbdR1jpvhA_9jeWYFZa73rkVuys8qFgKx8YVBm4IfXpWxCLPQffciwZaI-xnsHqJyQLctAgvY99EfyrzF3aTTG1hrwGXRigciZT15LJr4FS9cdlmjJ86HFmEwtAwQzTfq59B7IyNRp9qQHeTyxYtIAbnJ7mbNfJ_mogbblgoROJg4IyTsC7IPzlNK2HnAS0wISmGnMggNbFuS5_hNrPsQkClRrdgwcQ">
+        <%= image_tag "hero-nail.jpg", class: "w-full h-full object-cover", alt: "Nail art premium DIFNails" %>
       </div>
       <div class="absolute -bottom-8 -left-8 bg-white/60 backdrop-blur-xl border border-customer-outline-variant p-6 rounded-2xl shadow-xl max-w-xs">
         <div class="flex items-center gap-3">
@@ -44,7 +44,9 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <% @featured_services.each do |service| %>
           <div class="group relative overflow-hidden rounded-[32px] h-[350px]">
-            <% if service.image_url.present? %>
+            <% if service.photo.attached? %>
+              <%= image_tag service.photo, class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" %>
+            <% elsif service.image_url.present? %>
               <%= image_tag service.image_url, class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" %>
             <% else %>
               <div class="w-full h-full bg-customer-surface-container"></div>

@@ -1,4 +1,4 @@
-<main class="relative z-10 w-full max-w-md px-6 fade-in flex-1 mx-auto">
+<div class="w-full max-w-md px-6">
   <div class="glass-effect p-12 rounded-[2rem] shadow-2xl flex flex-col items-center">
     <div class="mb-12 text-center">
       <h1 class="font-['Bodoni_Moda'] text-4xl text-admin-primary tracking-tighter mb-2">DIFNails</h1>
@@ -27,11 +27,8 @@
       <%= f.submit "Sign In", class: "w-full bg-admin-primary text-white py-4 rounded-xl font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest shadow-lg hover:shadow-xl hover:opacity-90 transform active:scale-[0.98] transition-all duration-300 cursor-pointer" %>
     <% end %>
 
-    <div class="mt-8 text-center">
-      <%= link_to "← Back to Homepage", root_path, class: "font-['Plus_Jakarta_Sans'] text-sm text-admin-text-muted hover:text-admin-primary transition-all" %>
-    </div>
   </div>
-</main>
+</div>
 
 <style>
   .glass-effect {

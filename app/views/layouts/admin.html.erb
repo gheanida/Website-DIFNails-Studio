@@ -1,90 +1,92 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= content_for(:title) || "Admin Dashboard - Obsidian & Velvet" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
+<head>
+<title><%= content_for(:title) || "DIFNails Admin Portal" %></title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-  </head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <body class="min-h-screen flex bg-admin-bg text-admin-text">
-    <!-- Sidebar -->
-    <aside class="w-64 fixed inset-y-0 left-0 bg-admin-surface border-r border-admin-outline-variant flex flex-col z-20">
-      <div class="h-16 flex items-center px-6 border-b border-admin-outline-variant">
-        <span class="text-xl font-semibold tracking-wider text-admin-primary flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-admin-primary"></span>
-          DIFNails Admin
-        </span>
-      </div>
+<%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
 
-      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-        <%= link_to admin_dashboard_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors #{current_page?(admin_dashboard_path) || current_page?(admin_root_path) ? 'bg-admin-primary-container text-white' : 'text-admin-text-muted hover:bg-admin-low hover:text-admin-text'}" do %>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" /></svg>
+<script>
+  window.onUsersnapLoad = function(api) {
+    api.init();
+  };
+  var script = document.createElement('script');
+  script.defer = 1;
+  script.src = 'https://widget.usersnap.com/global/load/5b1c698c-906b-4bc6-a0c0-31289207e68e?onload=onUsersnapLoad';
+  document.getElementsByTagName('head')[0].appendChild(script);
+</script>
+</head>
+<body class="bg-admin-bg text-admin-text font-['Hanken_Grotesk'] overflow-x-hidden">
+<!-- Sidebar -->
+<aside class="fixed left-0 top-0 h-full w-[280px] flex flex-col py-8 px-4 bg-admin-surface-container-low shadow-sm z-50">
+<div class="px-4 mb-10">
+<h1 class="text-xl font-['Libre_Caslon_Text'] font-bold text-admin-primary">DIFNails Admin</h1>
+<p class="text-xs text-admin-outline uppercase tracking-widest mt-1 opacity-70">Management Portal</p>
+</div>
+
+<nav class="flex-1 space-y-1">
+<%= link_to admin_dashboard_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{current_page?(admin_dashboard_path) || current_page?(admin_root_path) ? 'bg-admin-secondary-container text-admin-primary border-l-4 border-admin-primary font-bold' : 'text-admin-text-muted hover:text-admin-primary hover:bg-admin-primary-fixed/20'}" do %>
           Dashboard
         <% end %>
-
-        <%= link_to admin_bookings_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors #{current_page?(admin_bookings_path) ? 'bg-admin-primary-container text-white' : 'text-admin-text-muted hover:bg-admin-low hover:text-admin-text'}" do %>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-          Bookings
+<%= link_to admin_services_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{current_page?(admin_services_path) ? 'bg-admin-secondary-container text-admin-primary border-l-4 border-admin-primary font-bold' : 'text-admin-text-muted hover:text-admin-primary hover:bg-admin-primary-fixed/20'}" do %>
+          Katalog
         <% end %>
-
-        <%= link_to admin_services_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors #{current_page?(admin_services_path) ? 'bg-admin-primary-container text-white' : 'text-admin-text-muted hover:bg-admin-low hover:text-admin-text'}" do %>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
-          Services
+<%= link_to admin_bookings_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{current_page?(admin_bookings_path) ? 'bg-admin-secondary-container text-admin-primary border-l-4 border-admin-primary font-bold' : 'text-admin-text-muted hover:text-admin-primary hover:bg-admin-primary-fixed/20'}" do %>
+          Reservasi
         <% end %>
-
-        <%= link_to admin_transactions_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors #{current_page?(admin_transactions_path) ? 'bg-admin-primary-container text-white' : 'text-admin-text-muted hover:bg-admin-low hover:text-admin-text'}" do %>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          Transactions
+<%= link_to admin_queue_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{current_page?(admin_queue_path) ? 'bg-admin-secondary-container text-admin-primary border-l-4 border-admin-primary font-bold' : 'text-admin-text-muted hover:text-admin-primary hover:bg-admin-primary-fixed/20'}" do %>
+          Antrian
         <% end %>
-
-        <%= link_to admin_customers_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors #{current_page?(admin_customers_path) ? 'bg-admin-primary-container text-white' : 'text-admin-text-muted hover:bg-admin-low hover:text-admin-text'}" do %>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+<%= link_to admin_transactions_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{current_page?(admin_transactions_path) ? 'bg-admin-secondary-container text-admin-primary border-l-4 border-admin-primary font-bold' : 'text-admin-text-muted hover:text-admin-primary hover:bg-admin-primary-fixed/20'}" do %>
+          Keuangan
+        <% end %>
+<%= link_to admin_customers_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{current_page?(admin_customers_path) ? 'bg-admin-secondary-container text-admin-primary border-l-4 border-admin-primary font-bold' : 'text-admin-text-muted hover:text-admin-primary hover:bg-admin-primary-fixed/20'}" do %>
           Customers
         <% end %>
-      </nav>
-
-      <!-- Sidebar Footer -->
-      <div class="p-4 border-t border-admin-outline-variant">
-        <%= button_to destroy_admin_user_session_path, method: :delete, class: "w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-admin-text-muted hover:bg-admin-low hover:text-admin-text transition-colors border border-admin-outline-variant cursor-pointer" do %>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-          Log Out
+<%= link_to admin_settings_path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{current_page?(admin_settings_path) ? 'bg-admin-secondary-container text-admin-primary border-l-4 border-admin-primary font-bold' : 'text-admin-text-muted hover:text-admin-primary hover:bg-admin-primary-fixed/20'}" do %>
+          Settings
         <% end %>
-      </div>
-    </aside>
+</nav>
 
-    <!-- Main Content Area -->
-    <div class="flex-1 pl-64 min-h-screen flex flex-col">
-      <!-- Top header (spacing placeholder or minimal bar) -->
-      <header class="h-16 border-b border-admin-outline-variant flex items-center justify-end px-8 bg-admin-bg z-10">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-admin-primary-container text-white flex items-center justify-center text-xs font-semibold">
-            A
-          </div>
-          <span class="text-sm font-medium text-admin-text"><%= current_admin_user.email %></span>
+<div class="mt-auto border-t border-admin-outline-variant pt-4 px-2">
+<%= button_to destroy_admin_user_session_path, method: :delete, class: "w-full flex items-center gap-3 text-admin-text-muted hover:text-admin-error px-4 py-3 transition-colors rounded-lg text-left" do %>
+          Logout
+        <% end %>
+</div>
+</aside>
+
+<!-- Top Bar -->
+<header class="flex justify-between items-center h-20 px-8 ml-[280px] w-[calc(100%-280px)] bg-admin-bg sticky top-0 z-40 border-b border-admin-outline-variant/30">
+<div class="flex items-center gap-4 bg-admin-surface-container-low px-4 py-2 rounded-full w-96">
+<span class="text-admin-outline">🔍</span>
+<span class="text-sm text-admin-outline/70">Cari antrian atau pelanggan...</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-admin-primary-fixed flex items-center justify-center text-admin-primary font-bold">
+<%= current_admin_user.email.first.upcase %>
         </div>
-      </header>
+<div>
+<p class="text-sm font-bold text-admin-text">Admin</p>
+<p class="text-[10px] text-admin-outline uppercase tracking-tighter">Super Admin</p>
+</div>
+</div>
+</header>
 
-      <!-- Page Content -->
-      <main class="flex-1 p-8">
-        <% if notice %>
-          <div class="mb-6 p-4 rounded-lg bg-admin-primary-container text-admin-primary border border-admin-outline-variant flex justify-between items-center text-sm">
-            <span><%= notice %></span>
-          </div>
-        <% end %>
-        <% if alert %>
-          <div class="mb-6 p-4 rounded-lg bg-red-950/40 text-red-300 border border-red-900/50 flex justify-between items-center text-sm">
-            <span><%= alert %></span>
-          </div>
-        <% end %>
-
-        <%= yield %>
-      </main>
-    </div>
-  </body>
+<!-- Main Content -->
+<main class="ml-[280px] p-8 min-h-screen max-w-[calc(100%-280px)] overflow-x-hidden">
+<% if notice %>
+        <div class="mb-6 p-4 rounded-lg bg-admin-primary-fixed text-admin-primary text-sm"><%= notice %></div>
+<% end %>
+      <% if alert %>
+<div class="mb-6 p-4 rounded-lg bg-red-100 text-red-700 text-sm"><%= alert %></div>
+<% end %>
+      <%= yield %>
+</main>
+</body>
 </html>

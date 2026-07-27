@@ -1,0 +1,54 @@
+<div class="max-w-xl mx-auto">
+  <h2 class="text-2xl font-['Libre_Caslon_Text'] text-admin-primary mb-8">Tambah Transaksi</h2>
+
+  <%= form_with model: [:admin, @transaction], local: true, class: "bg-white p-8 rounded-3xl shadow-sm space-y-6" do |f| %>
+    <% if @transaction.errors.any? %>
+      <div class="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+        <ul class="list-disc pl-5">
+          <% @transaction.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="space-y-2">
+      <%= f.label :transaction_type, "Jenis Transaksi", class: "text-sm font-bold text-admin-text" %>
+      <div class="flex gap-4">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <%= f.radio_button :transaction_type, "income" %>
+          <span class="text-sm">Pemasukan</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <%= f.radio_button :transaction_type, "expense", checked: true %>
+          <span class="text-sm">Pengeluaran</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :category, "Kategori", class: "text-sm font-bold text-admin-text" %>
+      <%= f.text_field :category, placeholder: "Contoh: Jasa, Sewa, Gaji, Produk", class: "w-full bg-admin-surface-container-low border-0 rounded-xl px-5 py-3 focus:ring-2 focus:ring-admin-primary" %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :description, "Keterangan", class: "text-sm font-bold text-admin-text" %>
+      <%= f.text_field :description, placeholder: "Deskripsi singkat", class: "w-full bg-admin-surface-container-low border-0 rounded-xl px-5 py-3 focus:ring-2 focus:ring-admin-primary" %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :amount, "Jumlah (Rp)", class: "text-sm font-bold text-admin-text" %>
+      <%= f.number_field :amount, placeholder: "150000", class: "w-full bg-admin-surface-container-low border-0 rounded-xl px-5 py-3 focus:ring-2 focus:ring-admin-primary" %>
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :transaction_date, "Tanggal", class: "text-sm font-bold text-admin-text" %>
+      <%= f.date_field :transaction_date, value: Date.today, class: "w-full bg-admin-surface-container-low border-0 rounded-xl px-5 py-3 focus:ring-2 focus:ring-admin-primary" %>
+    </div>
+
+    <div class="flex justify-end gap-4 pt-4">
+      <%= link_to "Batal", admin_transactions_path, class: "px-6 py-3 rounded-xl border border-admin-primary text-admin-primary font-bold hover:bg-admin-primary-fixed/20 transition-all" %>
+      <%= f.submit "Simpan", class: "px-8 py-3 rounded-xl bg-admin-primary text-white font-bold hover:opacity-90 transition-all cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

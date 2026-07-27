@@ -1,0 +1,86 @@
+<div class="max-w-2xl mx-auto">
+  <%= link_to "&larr; Kembali ke Daftar Reservasi".html_safe, admin_bookings_path, class: "text-sm text-admin-primary hover:underline mb-6 inline-block" %>
+
+  <div class="bg-white rounded-2xl shadow-sm border border-admin-outline-variant/20 overflow-hidden">
+    <div class="p-6 border-b border-admin-outline-variant/20 flex items-center justify-between">
+      <h3 class="text-xl font-['Libre_Caslon_Text'] text-admin-primary">Detail Reservasi</h3>
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold <%= status_badge_class(@booking.status) %>">
+        <%= status_label(@booking.status) %>
+      </span>
+    </div>
+
+    <div class="p-6 space-y-8">
+      <!-- Customer -->
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl bg-admin-secondary-fixed flex items-center justify-center text-admin-secondary font-bold text-xl">
+          <%= customer_initials(@booking.customer.name) %>
+        </div>
+        <div>
+          <p class="text-lg font-semibold text-admin-text"><%= @booking.customer.name %></p>
+          <p class="text-sm text-admin-outline"><%= @booking.customer.phone %> · <%= @booking.customer.bookings.count %> booking</p>
+        </div>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="grid grid-cols-2 gap-6 bg-admin-surface-container-low p-5 rounded-2xl">
+        <div>
+          <p class="text-[10px] text-admin-outline uppercase font-bold tracking-widest mb-1">ID Reservasi</p>
+          <p class="font-bold text-admin-text">BK-<%= @booking.id.to_s.rjust(4, '0') %></p>
+        </div>
+        <div>
+          <p class="text-[10px] text-admin-outline uppercase font-bold tracking-widest mb-1">Tanggal</p>
+          <p class="font-bold text-admin-text"><%= @booking.booking_date.strftime("%A, %d %b %Y") %></p>
+        </div>
+        <div>
+          <p class="text-[10px] text-admin-outline uppercase font-bold tracking-widest mb-1">Jam</p>
+          <p class="font-bold text-admin-text"><%= @booking.booking_time.strftime("%H:%M") %> WIB</p>
+        </div>
+        <div>
+          <p class="text-[10px] text-admin-outline uppercase font-bold tracking-widest mb-1">Dibuat</p>
+          <p class="font-bold text-admin-text"><%= @booking.created_at.strftime("%d %b %Y") %></p>
+        </div>
+      </div>
+
+      <!-- Service -->
+      <div class="space-y-4">
+        <h4 class="text-xs font-bold text-admin-primary uppercase tracking-widest border-b border-admin-primary/10 pb-2">Detail Layanan</h4>
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="font-bold text-admin-text"><%= @booking.service.name %></p>
+            <p class="text-sm text-admin-text-muted"><%= @booking.service.description %></p>
+          </div>
+          <p class="font-bold text-admin-primary"><%= number_to_currency(@booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></p>
+        </div>
+        <div class="pt-4 border-t border-dashed border-admin-outline-variant flex justify-between items-center">
+          <p class="font-semibold text-admin-text">Total Biaya</p>
+          <p class="text-xl font-['Libre_Caslon_Text'] text-admin-primary"><%= number_to_currency(@booking.service.price, unit: "Rp ", precision: 0, delimiter: ".") %></p>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <% if @booking.notes.present? %>
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-admin-primary uppercase tracking-widest">Catatan Pelanggan</h4>
+          <div class="p-4 bg-admin-primary-fixed/30 rounded-xl border border-admin-primary-fixed text-sm text-admin-text">
+            "<%= @booking.notes %>"
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Actions -->
+    <div class="p-6 bg-admin-surface-container-low border-t border-admin-outline-variant/20 space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <% if @booking.status == "pending" %>
+          <%= button_to "Konfirmasi", admin_booking_path(@booking), method: :patch, params: { status: "confirmed" }, class: "flex items-center justify-center gap-2 py-3 rounded-xl bg-admin-primary text-white font-bold hover:opacity-90 transition-all w-full" %>
+        <% end %>
+        <% if @booking.status == "confirmed" %>
+          <%= button_to "Selesai", admin_booking_path(@booking), method: :patch, params: { status: "completed" }, class: "flex items-center justify-center gap-2 py-3 rounded-xl bg-white border border-admin-primary text-admin-primary font-bold hover:bg-admin-primary-fixed/10 transition-all w-full" %>
+        <% end %>
+      </div>
+      <% if @booking.status.in?(["pending", "confirmed"]) %>
+        <%= button_to "Batalkan Reservasi", admin_booking_path(@booking), method: :patch, params: { status: "cancelled" }, class: "w-full py-3 rounded-xl text-red-600 font-bold hover:bg-red-50 transition-all border border-transparent hover:border-red-200", data: { confirm: "Yakin batalkan reservasi ini?" } %>
+      <% end %>
+    </div>
+  </div>
+</div>
